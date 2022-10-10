@@ -11,7 +11,12 @@ public class InputController : Singleton<InputController>
 
     void Update()
     {
-        if(!Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject())
+        if(!Input.GetMouseButtonDown(0))
+        {
+            return;
+        }
+
+        if(EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
