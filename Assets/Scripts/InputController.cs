@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputController : Singleton<InputController>
 {
@@ -10,7 +11,7 @@ public class InputController : Singleton<InputController>
 
     void Update()
     {
-        if(!Input.GetMouseButtonDown(0))
+        if(!Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }

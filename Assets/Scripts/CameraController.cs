@@ -4,29 +4,53 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private Transform camera;
-    [SerializeField] private float speed = 50;
+    private Vector3 touchStart;
+    public Camera cam;
+    public float groundZ = 0;
 
-    private void LateUpdate()
+    // Update is called once per frame
+    void Update()
     {
-        if(!Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            return;
+            touchStart = GetWorldPosition(groundZ);
         }
 
-        Vector3 dir = Vector3.zero;
+        if (Input.touchCount == 2)
+        {
+            Touch touchZero = Input.GetTouch(0);
+            Touch touchOne = Input.GetTouch(1);
 
-#if UNITY_EDITOR || UNITY_STANDALONE
-        dir = camera.transform.rotation * new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y"));
-        dir.y = 0;
-        camera.transform.position -= dir.normalized * speed * Time.deltaTime;
-#elif !UNITY_EDITOR || UNITY_ANDROID
-        Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
-        dir = camera.transform.rotation * new Vector3(touchDeltaPosition.x, 0, touchDeltaPosition.y);
-        dir.y = 0;
-        camera.transform.position -= dir.normalized * speed * Time.deltaTime;
-#else
+            Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
+            Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
 
-#endif
+            float prevMagnitude = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+            float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
+
+            float difference = currentMagnitude - prevMagnitude;
+
+            Zoom(difference * 0.02f);
+        }
+        else if(Input.GetMouseButton(0))
+        {
+            Vector3 direction = touchStart - GetWorldPosition(groundZ);
+            cam.transform.position += direction;
+        }
+
+        Zoom(Input.GetAxis("Mouse ScrollWheel") * 5);
+    }
+
+    private void Zoom(float val)
+    {
+        cam.transform.position += cam.transform.forward * val;
+    }
+
+    private Vector3 GetWorldPosition(float z)
+    {
+        Ray mousePos = cam.ScreenPointToRay(Input.mousePosition);
+        Plane ground = new Plane(Vector3.up, new Vector3(0, 0, z));
+        float distance;
+        ground.Raycast(mousePos, out distance);
+        return mousePos.GetPoint(distance);
     }
 }
