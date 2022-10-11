@@ -8,11 +8,14 @@ public class CameraController : MonoBehaviour
     public Camera cam;
     public float groundZ = 0;
 
+    private int currentIndex;
+
     public void UpdateCamera()
     {
-        if (Input.GetMouseButtonDown(0) && Input.touchCount == 0)
+        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            touchStart = GetWorldPosition(groundZ);
+            currentIndex = 0;
+            touchStart = GetWorldPosition(Input.GetTouch(0).position, groundZ);
         }
 
         if (Input.touchCount == 2)
@@ -28,11 +31,17 @@ public class CameraController : MonoBehaviour
 
             float difference = currentMagnitude - prevMagnitude;
 
+            if(touchOne.phase == TouchPhase.Ended || touchZero.phase == TouchPhase.Ended)
+            {
+                currentIndex = 0;
+                touchStart = GetWorldPosition(Input.GetTouch(0).position, groundZ);
+            }
             Zoom(difference * 0.02f);
         }
-        else if(Input.GetMouseButton(0))
+
+        if(Input.touchCount != 0)
         {
-            Vector3 direction = touchStart - GetWorldPosition(groundZ);
+            Vector3 direction = touchStart - GetWorldPosition(Input.GetTouch(0).position, groundZ);
             cam.transform.position += direction;
         }
 
@@ -44,9 +53,9 @@ public class CameraController : MonoBehaviour
         cam.transform.position += cam.transform.forward * val;
     }
 
-    private Vector3 GetWorldPosition(float z)
+    private Vector3 GetWorldPosition(Vector2 position, float z)
     {
-        Ray mousePos = cam.ScreenPointToRay(Input.mousePosition);
+        Ray mousePos = cam.ScreenPointToRay(position);
         Plane ground = new Plane(Vector3.up, new Vector3(0, 0, z));
         float distance;
         ground.Raycast(mousePos, out distance);
