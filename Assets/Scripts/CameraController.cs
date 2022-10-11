@@ -8,9 +8,9 @@ public class CameraController : MonoBehaviour
     public Camera cam;
     public float groundZ = 0;
 
-    void Update()
+    public void UpdateCamera()
     {
-        if (Input.touchCount == 1 && Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Input.touchCount == 0)
         {
             touchStart = GetWorldPosition(groundZ);
         }

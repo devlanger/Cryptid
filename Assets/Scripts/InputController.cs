@@ -8,15 +8,18 @@ public class InputController : Singleton<InputController>
     private Unit selectionUnit;
 
     [SerializeField] private GameObject selectionIndicator;
+    [SerializeField] private CameraController cameraController;
 
     void Update()
     {
-        if(!Input.GetMouseButtonDown(0))
+        if(EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
 
-        if(EventSystem.current.IsPointerOverGameObject())
+        cameraController.UpdateCamera();
+
+        if (!Input.GetMouseButtonDown(0))
         {
             return;
         }

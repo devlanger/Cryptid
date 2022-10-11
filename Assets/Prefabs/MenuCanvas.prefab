@@ -316,7 +316,7 @@ MonoBehaviour:
   startNewButton: {fileID: 5561929123584223904}
   multiplayerButton: {fileID: 0}
   exitButton: {fileID: 3572996964842795982}
-  versionText: {fileID: 0}
+  versionText: {fileID: 2968987217639349878}
 --- !u!1 &5561929122847056106
 GameObject:
   m_ObjectHideFlags: 0
