@@ -18,7 +18,7 @@ public class GameUI : MonoBehaviour
     private void Start()
     {
         Instance_OnGameStateChanged(GameController.Instance.gameState);
-        GameController.Instance.OnGameStateChanged += Instance_OnGameStateChanged;
+        GameController.Instance.OnFinishedTurn += Instance_OnGameStateChanged;
 
         optionsButton.onClick.AddListener(OptionsClick);
         exitButton.onClick.AddListener(ExitToMenu);

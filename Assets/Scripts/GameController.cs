@@ -11,12 +11,23 @@ public class GameController : Singleton<GameController>
     [field:NonSerialized]
     public GameState gameState;
 
-    public event Action<GameState> OnGameStateChanged;
+    public event Action<GameState> OnFinishedTurn;
+    public event Action<GameState> OnGameBegun;
+
+    private IEnumerator Start()
+    {
+        yield return 0;
+        OnGameBegun?.Invoke(gameState);
+    }
 
     public void FinishTurn()
     {
+        gameState.GetCurrentPlayerBackpack().AddItemRandomSlot(new ItemState()
+        {
+            itemBaseId = UnityEngine.Random.Range(1, 4),
+        });
         gameState.FinishTurn();
-        OnGameStateChanged?.Invoke(gameState);
+        OnFinishedTurn?.Invoke(gameState);
     }
 }
 
@@ -27,6 +38,7 @@ public class GameState
     public int CurrentPlayerIndex;
     public int TurnNumber = 1;
 
+    public Dictionary<string, ItemsContainer> backpacks = new Dictionary<string, ItemsContainer>();
     public Dictionary<string, Player> players = new Dictionary<string, Player>();
     public Dictionary<string, UnitState> unitStates = new Dictionary<string, UnitState>();
 
@@ -47,6 +59,11 @@ public class GameState
         }
 
         CurrentPlayerId = list[CurrentPlayerIndex].Id;
+    }
+
+    public ItemsContainer GetCurrentPlayerBackpack()
+    {
+        return backpacks[CurrentPlayerId];
     }
 }
 

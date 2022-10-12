@@ -12,6 +12,16 @@ public class MoveAction : GameAction
             {
                 return false;
             }
+
+            if(Vector3.Distance(new Vector3(pos.x, 0, pos.y), unit.transform.position) > 5)
+            {
+                return false;
+            }
+
+            if(unit.state.moved)
+            {
+                return false;
+            }
             
             //if(unit.state.moved)
             //{

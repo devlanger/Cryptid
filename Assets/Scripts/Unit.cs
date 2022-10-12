@@ -6,5 +6,7 @@ using UnityEngine;
 
 public class Unit : SerializedMonoBehaviour
 {
-    public UnitState state = new UnitState();
+    public string unitId = "";
+    public UnitState state => GameController.Instance.gameState.unitStates[unitId];
+    public bool IsMine => state.ownerId == GameController.Instance.gameState.CurrentPlayerId;
 }

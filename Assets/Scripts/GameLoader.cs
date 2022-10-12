@@ -15,6 +15,7 @@ public class GameLoader : MonoBehaviour
     public void StartNewGame(GameStartSettings settings)
     {
         GameState state = new GameState();
+        GameController.Instance.gameState = state;
 
         for (int i = 0; i < settings.players; i++)
         {
@@ -26,14 +27,13 @@ public class GameLoader : MonoBehaviour
                 type = UnitType.PLAYER,
                 spawnPoint = new Vector2Int(i * 2 - (settings.players / 2), 0)
             });
-            
+
+            state.backpacks[playerId] = new ItemsContainer();
             state.players[playerId] = new Player(playerId);
         }
 
         state.CurrentPlayerIndex = 0;
         state.CurrentPlayerId = state.players.Values.ToList()[0].Id;
-
-        GameController.Instance.gameState = state;
     }
 
     public void LoadGame()

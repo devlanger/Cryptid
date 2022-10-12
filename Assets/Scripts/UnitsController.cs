@@ -9,17 +9,52 @@ public class UnitsController : Singleton<UnitsController>
 
     public Dictionary<string, Unit> units = new Dictionary<string, Unit>();
 
+    private void Awake()
+    {
+        GameController.Instance.OnFinishedTurn += RefreshOutlines;
+        GameController.Instance.OnFinishedTurn += ResetUnits;
+        GameController.Instance.OnGameBegun += RefreshOutlines;
+    }
+
+    private void ResetUnits(GameState obj)
+    {
+        foreach (var item in obj.unitStates.Values)
+        {
+            item.moved = false;
+            item.attacked = false;
+        }
+    }
+
+    private void RefreshOutlines(GameState obj)
+    {
+        foreach (var item in units.Values)
+        {
+            if(item.state.ownerId == obj.CurrentPlayerId)
+            {
+                item.GetComponent<Outline>().enabled = true;
+            }
+            else
+            {
+                item.GetComponent<Outline>().enabled = false;
+            }
+        }
+    }
+
     public void SpawnUnit(UnitSpawnSettings settings)
     {
         var inst = Instantiate(prefab);
         inst.transform.position = new Vector3(settings.spawnPoint.x, 1, settings.spawnPoint.y);
-        inst.state.unitId = System.Guid.NewGuid().ToString();
-        inst.state.ownerId = settings.ownerId;
-        inst.state.type = settings.type;
-        inst.state.posX = settings.spawnPoint.x;
-        inst.state.posZ = settings.spawnPoint.y;
+        
+        var state = new UnitState();
+        state.unitId = System.Guid.NewGuid().ToString();
+        state.ownerId = settings.ownerId;
+        state.type = settings.type;
+        state.posX = settings.spawnPoint.x;
+        state.posZ = settings.spawnPoint.y;
 
-        units.Add(inst.state.unitId, inst);
+        inst.unitId = state.unitId;
+        GameController.Instance.gameState.unitStates.Add(state.unitId, state);
+        units.Add(state.unitId, inst);
     }
 
     public bool GetUnit(string unitId, out Unit unit)

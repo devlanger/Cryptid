@@ -4,59 +4,121 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    private Vector3 touchStart;
+    private Vector3 lastPanPosition;
+    private int panFingerId;
     public Camera cam;
     public float groundZ = 0;
 
     private int currentIndex;
+    private bool wasZoomingLastFrame;
+
+    private Vector3 camPos;
+
+    Plane ground;
+
+    private void Awake()
+    {
+        ground = new Plane(Vector3.up, new Vector3(0, 0, groundZ));
+        camPos = transform.position;
+    }
+
+    private void Update()
+    {
+        transform.position = camPos;
+        //transform.position = Vector3.Lerp(transform.position, camPos, 5 * Time.deltaTime);
+    }
 
     public void UpdateCamera()
     {
-        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (Input.touchSupported && Application.platform != RuntimePlatform.WebGLPlayer)
         {
-            currentIndex = 0;
-            touchStart = GetWorldPosition(Input.GetTouch(0).position, groundZ);
+            HandleTouch();
+        }
+        else
+        {
+            HandleMouse();
+        }
+    }
+
+    public void PanCamera(Vector3 newPanPosition)
+    {
+        Vector3 direction = lastPanPosition - GetWorldPosition(newPanPosition);
+        camPos += direction;
+    }
+
+    void HandleMouse()
+    {
+        // On mouse down, capture it's position.
+        // Otherwise, if the mouse is still down, pan the camera.
+        if (Input.GetMouseButtonDown(0))
+        {
+            lastPanPosition = GetWorldPosition(Input.mousePosition);
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            PanCamera(Input.mousePosition);
         }
 
-        if (Input.touchCount == 2)
+        // Check for scrolling to zoom the camera
+        float scroll = Input.GetAxis("Mouse ScrollWheel") * 10;
+        Zoom(scroll);
+    }
+
+    void HandleTouch()
+    {
+        switch (Input.touchCount)
         {
-            Touch touchZero = Input.GetTouch(0);
-            Touch touchOne = Input.GetTouch(1);
 
-            Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
-            Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
+            case 1: // Panning
+                wasZoomingLastFrame = false;
 
-            float prevMagnitude = (touchZeroPrevPos - touchOnePrevPos).magnitude;
-            float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
+                // If the touch began, capture its position and its finger ID.
+                // Otherwise, if the finger ID of the touch doesn't match, skip it.
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began)
+                {
+                    lastPanPosition = GetWorldPosition(touch.position);
+                    panFingerId = touch.fingerId;
+                }
+                else if (touch.fingerId == panFingerId && touch.phase == TouchPhase.Moved)
+                {
+                    PanCamera(touch.position);
+                }
+                break;
 
-            float difference = currentMagnitude - prevMagnitude;
+            case 2: // Zooming
+                Touch touchZero = Input.GetTouch(0);
+                Touch touchOne = Input.GetTouch(1);
 
-            if(touchOne.phase == TouchPhase.Ended || touchZero.phase == TouchPhase.Ended)
-            {
-                currentIndex = 0;
-                touchStart = GetWorldPosition(Input.GetTouch(0).position, groundZ);
-            }
-            Zoom(difference * 0.02f);
+                Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
+                Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
+
+                float prevMagnitude = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+                float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
+
+                float difference = currentMagnitude - prevMagnitude;
+
+                Zoom(difference * 0.02f);
+                touch = Input.GetTouch(0);
+                lastPanPosition = GetWorldPosition(touch.position);
+                panFingerId = touch.fingerId;
+                break;
+
+            default:
+                wasZoomingLastFrame = false;
+                break;
         }
-
-        if(Input.touchCount != 0)
-        {
-            Vector3 direction = touchStart - GetWorldPosition(Input.GetTouch(0).position, groundZ);
-            cam.transform.position += direction;
-        }
-
-        Zoom(Input.GetAxis("Mouse ScrollWheel") * 5);
     }
 
     private void Zoom(float val)
     {
-        cam.transform.position += cam.transform.forward * val;
+        camPos += cam.transform.forward * val;
+        //cam.fieldOfView = Mathf.Clamp(cam.fieldOfView - val, 25, 80);
     }
 
-    private Vector3 GetWorldPosition(Vector2 position, float z)
+    private Vector3 GetWorldPosition(Vector2 position)
     {
         Ray mousePos = cam.ScreenPointToRay(position);
-        Plane ground = new Plane(Vector3.up, new Vector3(0, 0, z));
         float distance;
         ground.Raycast(mousePos, out distance);
         return mousePos.GetPoint(distance);
