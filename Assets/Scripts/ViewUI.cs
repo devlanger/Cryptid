@@ -9,6 +9,6 @@ public class ViewUI : MonoBehaviour
     public bool IsActive => canvas != null && canvas.enabled;
 
     public void Toggle() { if (IsActive) { Deactivate(); } else { Activate(); } }
-    public void Activate() { canvas.enabled = true; }
-    public void Deactivate() { canvas.enabled = false; }
+    public virtual void Activate() { canvas.enabled = true; }
+    public virtual void Deactivate() { canvas.enabled = false; }
 }

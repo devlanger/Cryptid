@@ -8,5 +8,8 @@ public class UnitScriptable : SerializedScriptableObject
 {
     public string name;
     public string description;
+    public int health = 3;
+    public int minDamage = 1;
+    public int maxDamage = 2;
     public Sprite icon;
 }

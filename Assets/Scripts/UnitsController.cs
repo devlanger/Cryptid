@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class UnitsController : Singleton<UnitsController>
 {
-    public Unit prefab;
-
+    public Dictionary<UnitType, Unit> prefabs = new Dictionary<UnitType, Unit>();
     public Dictionary<string, Unit> units = new Dictionary<string, Unit>();
+
+    public event Action<Unit> OnUnitSpawn;
+    public event Action<Unit> OnUnitDespawn;
 
     private void Awake()
     {
@@ -29,20 +31,23 @@ public class UnitsController : Singleton<UnitsController>
     {
         foreach (var item in units.Values)
         {
-            if(item.state.ownerId == obj.CurrentPlayerId)
+            if (item.state.type == UnitType.PLAYER)
             {
-                item.GetComponent<Outline>().enabled = true;
-            }
-            else
-            {
-                item.GetComponent<Outline>().enabled = false;
+                if (item.state.ownerId == obj.CurrentPlayerId)
+                {
+                    item.GetComponent<Outline>().enabled = true;
+                }
+                else
+                {
+                    item.GetComponent<Outline>().enabled = false;
+                }
             }
         }
     }
 
     public void SpawnUnit(UnitSpawnSettings settings)
     {
-        var inst = Instantiate(prefab);
+        var inst = Instantiate(GetPrefab(settings));
         inst.transform.position = new Vector3(settings.spawnPoint.x, 1, settings.spawnPoint.y);
         
         var state = new UnitState();
@@ -51,15 +56,48 @@ public class UnitsController : Singleton<UnitsController>
         state.type = settings.type;
         state.posX = settings.spawnPoint.x;
         state.posZ = settings.spawnPoint.y;
+        state.health = 3;
+        state.minDmg = 1;
+        state.maxDmg = 2;
 
-        inst.unitId = state.unitId;
+        if (state.type == UnitType.MONSTER)
+        {
+            if(DatabaseController.Instance.Manager.GetUnit(settings.baseId, out var unitData))
+            {
+                state.health = unitData.health;
+                state.minDmg = unitData.minDamage;
+                state.maxDmg = unitData.maxDamage;
+            }
+        }
+
+        inst.UnitId = state.unitId;
         GameController.Instance.gameState.unitStates.Add(state.unitId, state);
         units.Add(state.unitId, inst);
+
+        OnUnitSpawn?.Invoke(inst);
+    }
+
+    private Unit GetPrefab(UnitSpawnSettings settings)
+    {
+        if (prefabs.ContainsKey(settings.type))
+        {
+            return prefabs[settings.type];
+        }
+
+        throw new NullReferenceException("The object prefab is missing in the UnitController");
     }
 
     public bool GetUnit(string unitId, out Unit unit)
     {
         return units.TryGetValue(unitId, out unit);
+    }
+
+    public void RemoveUnit(string unitId)
+    {
+        OnUnitDespawn?.Invoke(units[unitId]);
+        GameController.Instance.gameState.unitStates.Remove(unitId);
+        Destroy(units[unitId].gameObject);
+        units.Remove(unitId);
     }
 }
 
@@ -68,12 +106,14 @@ public enum UnitType
     PLAYER = 1,
     MONSTER = 2,
     DROP = 3,
-    DOORS = 4
+    DOORS = 4,
+    CHEST = 5,
 }
 
 public class UnitSpawnSettings
 {
     public string ownerId;
+    public int baseId;
     public UnitType type;
     public Vector2Int spawnPoint;
 }

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,17 +47,29 @@ public class InputController : Singleton<InputController>
             var unit = hit.collider.GetComponent<Unit>();
             if(unit != null)
             {
-                selectionUnit = unit;
-                selectionIndicator.SetActive(true);
-                if (selectionUnit.IsMine && !selectionUnit.state.moved)
+                if (selectionUnit != null)
                 {
-                    movementIndicator.SetActive(true);
+                    var gState = GameController.Instance.gameState;
+                    ActionsController.Instance.Execute(new AttackAction(gState, gState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
                 }
-                Vector3 pos = selectionUnit.transform.position;
-                pos.y = selectionIndicator.transform.position.y;
+                else
+                {
+                    selectionUnit = unit;
+                    selectionIndicator.SetActive(true);
+                    if (selectionUnit.IsMine && !selectionUnit.state.moved)
+                    {
+                        movementIndicator.SetActive(true);
+                    }
+                    else
+                    {
+                        movementIndicator.SetActive(false);
+                    }
+                    Vector3 pos = selectionUnit.transform.position;
+                    pos.y = selectionIndicator.transform.position.y;
 
-                selectionIndicator.transform.position = pos;
-                movementIndicator.transform.position = pos;
+                    selectionIndicator.transform.position = pos;
+                    movementIndicator.transform.position = pos;
+                }
             }
             else
             {

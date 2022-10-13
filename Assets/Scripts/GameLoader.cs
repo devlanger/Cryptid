@@ -32,6 +32,23 @@ public class GameLoader : MonoBehaviour
             state.players[playerId] = new Player(playerId);
         }
 
+        for (int i = 0; i < 5; i++)
+        {
+            UnitsController.Instance.SpawnUnit(new UnitSpawnSettings()
+            {
+                ownerId = "",
+                type = UnitType.MONSTER,
+                spawnPoint = new Vector2Int(UnityEngine.Random.Range(-9, 9), UnityEngine.Random.Range(7, 27))
+            }); 
+            
+            UnitsController.Instance.SpawnUnit(new UnitSpawnSettings()
+            {
+                ownerId = "",
+                type = UnitType.CHEST,
+                spawnPoint = new Vector2Int(UnityEngine.Random.Range(-9, 9), UnityEngine.Random.Range(7, 27))
+            });
+        }
+
         state.CurrentPlayerIndex = 0;
         state.CurrentPlayerId = state.players.Values.ToList()[0].Id;
     }

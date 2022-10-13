@@ -8,7 +8,12 @@ using UnityEngine;
 public class DatabasesManager : SerializedScriptableObject
 {
     public Dictionary<int, ItemScriptable> items = new Dictionary<int, ItemScriptable>();
-    public List<UnitScriptable> units = new List<UnitScriptable>();
+    public Dictionary<int, UnitScriptable> units = new Dictionary<int, UnitScriptable>();
+
+    public bool GetUnit(int itemBaseId, out UnitScriptable unit)
+    {
+        return units.TryGetValue(itemBaseId, out unit);
+    }
 
     public bool GetItem(int itemBaseId, out ItemScriptable itemData)
     {

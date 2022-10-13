@@ -13,7 +13,6 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Button finishTurnButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Text turnText;
-    [SerializeField] private Text playerText;
 
     private void Start()
     {
@@ -42,7 +41,6 @@ public class GameUI : MonoBehaviour
 
     private void Instance_OnGameStateChanged(GameState obj)
     {
-        turnText.text = $"Turn {obj.TurnNumber}";
-        playerText.text = $"Player {obj.CurrentPlayerId}";
+        turnText.text = $"Turn {Environment.NewLine}{obj.TurnNumber}";
     }
 }

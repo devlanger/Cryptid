@@ -22,10 +22,6 @@ public class GameController : Singleton<GameController>
 
     public void FinishTurn()
     {
-        gameState.GetCurrentPlayerBackpack().AddItemRandomSlot(new ItemState()
-        {
-            itemBaseId = UnityEngine.Random.Range(1, 4),
-        });
         gameState.FinishTurn();
         OnFinishedTurn?.Invoke(gameState);
     }
@@ -63,6 +59,11 @@ public class GameState
 
     public ItemsContainer GetCurrentPlayerBackpack()
     {
+        return GetPlayerBackpack(CurrentPlayerId);
+    }
+
+    public ItemsContainer GetPlayerBackpack(string playerId)
+    {
         return backpacks[CurrentPlayerId];
     }
 }
@@ -85,7 +86,9 @@ public class UnitState
     public string unitId;
     public UnitType type;
     public int posX, posZ;
-    public float health;
+    public int health;
     public bool moved;
     public bool attacked;
+    public int maxDmg = 1;
+    public int minDmg = 2;
 }
