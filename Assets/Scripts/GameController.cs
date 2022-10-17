@@ -4,8 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
-public class GameController : Singleton<GameController>
+public class GameController : MonoBehaviour
 {
     [OdinSerialize]
     [field:NonSerialized]
@@ -13,6 +14,61 @@ public class GameController : Singleton<GameController>
 
     public event Action<GameState> OnFinishedTurn;
     public event Action<GameState> OnGameBegun;
+
+    private UnitsController _unitsController;
+    public GameStartSettings gameStartSettings;
+    
+    [Inject]
+    public void Construct(UnitsController _unitsController)
+    {
+        this._unitsController = _unitsController;
+    }
+
+    private void Awake()
+    {
+        StartNewGame(gameStartSettings);
+    }
+
+    public void StartNewGame(GameStartSettings settings)
+    {
+        GameState state = new GameState();
+        gameState = state;
+
+        for (int i = 0; i < settings.players; i++)
+        {
+            string playerId = System.Guid.NewGuid().ToString();
+
+            _unitsController.SpawnUnit(new UnitSpawnSettings()
+            {
+                ownerId = playerId,
+                type = UnitType.PLAYER,
+                spawnPoint = new Vector2Int(i * 2 - (settings.players / 2), 0)
+            });
+
+            state.backpacks[playerId] = new ItemsContainer();
+            state.players[playerId] = new Player(playerId);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            _unitsController.SpawnUnit(new UnitSpawnSettings()
+            {
+                ownerId = "",
+                type = UnitType.MONSTER,
+                spawnPoint = new Vector2Int(UnityEngine.Random.Range(-9, 9), UnityEngine.Random.Range(7, 27))
+            });
+
+            _unitsController.SpawnUnit(new UnitSpawnSettings()
+            {
+                ownerId = "",
+                type = UnitType.CHEST,
+                spawnPoint = new Vector2Int(UnityEngine.Random.Range(-9, 9), UnityEngine.Random.Range(7, 27))
+            });
+        }
+
+        state.CurrentPlayerIndex = 0;
+        state.CurrentPlayerId = state.players.Values.ToList()[0].Id;
+    }
 
     private IEnumerator Start()
     {

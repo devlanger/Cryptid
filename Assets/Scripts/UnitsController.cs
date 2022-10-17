@@ -2,20 +2,29 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class UnitsController : Singleton<UnitsController>
+public class UnitsController
 {
-    public Dictionary<UnitType, Unit> prefabs = new Dictionary<UnitType, Unit>();
+    private UnitObjectsScriptable _unitsScriptable;
+    private GameController gameController;
+    private DatabaseController databaseController;
+
+    public Dictionary<UnitType, Unit> prefabs => _unitsScriptable.prefabs;
     public Dictionary<string, Unit> units = new Dictionary<string, Unit>();
 
     public event Action<Unit> OnUnitSpawn;
     public event Action<Unit> OnUnitDespawn;
 
-    private void Awake()
+    [Inject]
+    public void Construct(DatabaseController databaseController, GameController gameController, UnitObjectsScriptable unitsScriptable)
     {
-        GameController.Instance.OnFinishedTurn += RefreshOutlines;
-        GameController.Instance.OnFinishedTurn += ResetUnits;
-        GameController.Instance.OnGameBegun += RefreshOutlines;
+        this.gameController = gameController;
+        this.databaseController = databaseController;
+        this._unitsScriptable = unitsScriptable;
+        gameController.OnFinishedTurn += RefreshOutlines;
+        gameController.OnFinishedTurn += ResetUnits;
+        gameController.OnGameBegun += RefreshOutlines;
     }
 
     private void ResetUnits(GameState obj)
@@ -47,7 +56,8 @@ public class UnitsController : Singleton<UnitsController>
 
     public void SpawnUnit(UnitSpawnSettings settings)
     {
-        var inst = Instantiate(GetPrefab(settings));
+        var inst = Unit.Instantiate(GetPrefab(settings));
+        inst.Construct(gameController);
         inst.transform.position = new Vector3(settings.spawnPoint.x, 1, settings.spawnPoint.y);
         
         var state = new UnitState();
@@ -62,7 +72,7 @@ public class UnitsController : Singleton<UnitsController>
 
         if (state.type == UnitType.MONSTER)
         {
-            if(DatabaseController.Instance.Manager.GetUnit(settings.baseId, out var unitData))
+            if(databaseController.Manager.GetUnit(settings.baseId, out var unitData))
             {
                 state.health = unitData.health;
                 state.minDmg = unitData.minDamage;
@@ -71,7 +81,7 @@ public class UnitsController : Singleton<UnitsController>
         }
 
         inst.UnitId = state.unitId;
-        GameController.Instance.gameState.unitStates.Add(state.unitId, state);
+        gameController.gameState.unitStates.Add(state.unitId, state);
         units.Add(state.unitId, inst);
 
         OnUnitSpawn?.Invoke(inst);
@@ -95,8 +105,8 @@ public class UnitsController : Singleton<UnitsController>
     public void RemoveUnit(string unitId)
     {
         OnUnitDespawn?.Invoke(units[unitId]);
-        GameController.Instance.gameState.unitStates.Remove(unitId);
-        Destroy(units[unitId].gameObject);
+        gameController.gameState.unitStates.Remove(unitId);
+        GameObject.Destroy(units[unitId].gameObject);
         units.Remove(unitId);
     }
 }

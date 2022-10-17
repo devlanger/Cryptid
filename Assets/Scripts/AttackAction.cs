@@ -3,13 +3,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
+using Zenject.Asteroids;
 using static UnityEngine.UI.CanvasScaler;
 
 public class AttackAction : GameAction
 {
-    public override bool CanExecute(GameState state)
+    private UnitsController _unitsController;
+
+    public override bool CanExecute(GameState state)    
     {
-        if (UnitsController.Instance.GetUnit(unitId, out Unit unit) && UnitsController.Instance.GetUnit(targetUnitId, out Unit unitTarget))
+        if (_unitsController.GetUnit(unitId, out Unit unit) && _unitsController.GetUnit(targetUnitId, out Unit unitTarget))
         {
             if(unit == unitTarget)
             {
@@ -54,16 +58,22 @@ public class AttackAction : GameAction
 
     private string unitId;
     private string targetUnitId;
+    private ActionsController actionsController;
+    private GameController gameController;
 
-    public AttackAction(GameState gameState, string playerId, string unitId, string targetUnitId) : base(gameState, playerId)
+    public AttackAction(GameState gameState, GameController gameController, ActionsController actionsController, UnitsController unitsController, 
+        string playerId, string unitId, string targetUnitId) : base(gameState, playerId)
     {
+        _unitsController = unitsController;
+        this.gameController = gameController;
+        this.actionsController = actionsController;
         this.unitId = unitId;
         this.targetUnitId = targetUnitId;
     }
 
     public override void Execute(GameState state)
     {
-        if(UnitsController.Instance.GetUnit(unitId, out Unit unitAttacker) && UnitsController.Instance.GetUnit(targetUnitId, out Unit unitTarget))
+        if(_unitsController.GetUnit(unitId, out Unit unitAttacker) && _unitsController.GetUnit(targetUnitId, out Unit unitTarget))
         {
             unitAttacker.state.moved = true;
             unitAttacker.state.attacked = true;
@@ -81,15 +91,15 @@ public class AttackAction : GameAction
                     if (unitTarget.state.health <= 0)
                     {
                         s.onComplete += () => 
-                        { 
-                            UnitsController.Instance.StartCoroutine(x(unitTarget.UnitId)); 
+                        {
+                            gameController.StartCoroutine(x(unitTarget.UnitId)); 
                         };
                     }
                     else
                     {
                         s.onComplete += () =>
                         {
-                            ActionsController.Instance.Execute(new AttackAction(state, "", unitTarget.UnitId, unitAttacker.UnitId));
+                            actionsController.Execute(new AttackAction(state, gameController, actionsController, _unitsController, "", unitTarget.UnitId, unitAttacker.UnitId));
                         };
                     }
                     break;
@@ -100,7 +110,7 @@ public class AttackAction : GameAction
                 case UnitType.CHEST:
                     SoundsController.Instance.PlaySound(SoundId.LOOT_PICKUP);
                     string playerId = unitAttacker.state.ownerId;
-                    var backpack = GameController.Instance.gameState.GetCurrentPlayerBackpack();
+                    var backpack = gameController.gameState.GetCurrentPlayerBackpack();
                     backpack.AddItem(new ItemState()
                     {
                         itemBaseId = UnityEngine.Random.Range(1, 4)
@@ -116,11 +126,11 @@ public class AttackAction : GameAction
 
     private IEnumerator x(string unitId)
     {
-        if (UnitsController.Instance.GetUnit(targetUnitId, out Unit unitTarget))
+        if (_unitsController.GetUnit(targetUnitId, out Unit unitTarget))
         {
             unitTarget.Die();
             yield return new WaitForSeconds(1);
-            UnitsController.Instance.RemoveUnit(unitId);
+            _unitsController.RemoveUnit(unitId);
         }
     }
 }

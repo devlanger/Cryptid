@@ -2,12 +2,15 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class MoveAction : GameAction
 {
+    private UnitsController _unitsController;
+
     public override bool CanExecute(GameState state)
     {
-        if (UnitsController.Instance.GetUnit(unitId, out Unit unit))
+        if (_unitsController.GetUnit(unitId, out Unit unit))
         {
             if(state.CurrentPlayerId != unit.state.ownerId)
             {
@@ -37,15 +40,22 @@ public class MoveAction : GameAction
     private Vector2Int pos;
     private string unitId;
 
-    public MoveAction(GameState gameState, string playerId, string unitId, Vector2Int pos) : base(gameState, playerId)
+    [Inject]
+    public void Initialize(UnitsController _unitsController)
     {
+        this._unitsController = _unitsController;
+    }
+
+    public MoveAction(GameState gameState, UnitsController unitsController, string playerId, string unitId, Vector2Int pos) : base(gameState, playerId)
+    {
+        _unitsController = unitsController;
         this.pos = pos;
         this.unitId = unitId;
     }
 
     public override void Execute(GameState state)
     {
-        if(UnitsController.Instance.GetUnit(unitId, out Unit unit))
+        if(_unitsController.GetUnit(unitId, out Unit unit))
         {
             unit.state.moved = true;
             unit.state.posX = pos.x;

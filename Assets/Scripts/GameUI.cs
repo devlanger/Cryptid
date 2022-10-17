@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
+using Zenject.Asteroids;
 
 public class GameUI : MonoBehaviour
 {
@@ -13,11 +15,18 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Button finishTurnButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Text turnText;
+    private GameController gameController;
+
+    [Inject]
+    public void Construct(GameController gameController)
+    {
+        this.gameController = gameController;
+    }
 
     private void Start()
     {
-        Instance_OnGameStateChanged(GameController.Instance.gameState);
-        GameController.Instance.OnFinishedTurn += Instance_OnGameStateChanged;
+        Instance_OnGameStateChanged(gameController.gameState);
+        gameController.OnFinishedTurn += Instance_OnGameStateChanged;
 
         optionsButton.onClick.AddListener(OptionsClick);
         exitButton.onClick.AddListener(ExitToMenu);
@@ -36,7 +45,7 @@ public class GameUI : MonoBehaviour
 
     private void FinishTurn_Click()
     {
-        GameController.Instance.FinishTurn();
+        gameController.FinishTurn();
     }
 
     private void Instance_OnGameStateChanged(GameState obj)

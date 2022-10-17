@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class HealthbarsUI : MonoBehaviour
 {
@@ -9,10 +10,12 @@ public class HealthbarsUI : MonoBehaviour
 
     private Dictionary<string, UnitHealthbar> healthbars = new Dictionary<string, UnitHealthbar>();
 
+    [Inject] private UnitsController _unitsController;
+
     private void Awake()
     {
-        UnitsController.Instance.OnUnitSpawn += Instance_OnUnitSpawn;
-        UnitsController.Instance.OnUnitDespawn += Instance_OnUnitDespawn;
+        _unitsController.OnUnitSpawn += Instance_OnUnitSpawn;
+        _unitsController.OnUnitDespawn += Instance_OnUnitDespawn;
     }
 
     private void Update()

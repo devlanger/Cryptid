@@ -2,15 +2,24 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
+using Zenject.Asteroids;
 
 public class NextTurnPopup : ViewUI
 {
     [SerializeField] private Transform container;
+    private GameController gameController;
+
+    [Inject]
+    public void Construct(GameController gameController)
+    {
+        this.gameController = gameController;
+    }
 
     private void Awake()
     {
-        GameController.Instance.OnFinishedTurn += Instance_OnFinishedTurn;
-        GameController.Instance.OnGameBegun += Instance_OnGameBegun;
+        gameController.OnFinishedTurn += Instance_OnFinishedTurn;
+        gameController.OnGameBegun += Instance_OnGameBegun;
     }
 
     private void Instance_OnGameBegun(GameState obj)

@@ -4,12 +4,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
+using Zenject.Asteroids;
 
 public class Unit : SerializedMonoBehaviour
 {
     public string UnitId = "";
-    public UnitState state => GameController.Instance.gameState.unitStates[UnitId];
-    public bool IsMine => state.ownerId == GameController.Instance.gameState.CurrentPlayerId;
+    private GameController gameController;
+
+    public UnitState state => gameController.gameState.unitStates[UnitId];
+    public bool IsMine => state.ownerId == gameController.gameState.CurrentPlayerId;
+
+    public void Construct(GameController gameController)
+    {
+        this.gameController = gameController;
+    }
 
     public void Die()
     {

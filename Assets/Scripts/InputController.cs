@@ -3,18 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
-public class InputController : Singleton<InputController>
+public class InputController : MonoBehaviour
 {
     private Unit selectionUnit;
+    private GameController gameController;
+    private ActionsController actionsController;
+    private UnitsController unitsController;
 
     [SerializeField] private GameObject selectionIndicator;
     [SerializeField] private GameObject movementIndicator;
     [SerializeField] private CameraController cameraController;
 
+    [Inject]
+    public void Construct(UnitsController unitsController, GameController gameController, ActionsController actionsController)
+    {
+        this.gameController = gameController;
+        this.actionsController = actionsController;
+        this.unitsController = unitsController;
+    }
+
     private void Awake()
     {
-        GameController.Instance.OnFinishedTurn += Instance_OnFinishedTurn;
+        gameController.OnFinishedTurn += Instance_OnFinishedTurn;
     }
 
     private void Instance_OnFinishedTurn(GameState obj)
@@ -49,8 +61,7 @@ public class InputController : Singleton<InputController>
             {
                 if (selectionUnit != null)
                 {
-                    var gState = GameController.Instance.gameState;
-                    ActionsController.Instance.Execute(new AttackAction(gState, gState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
+                    actionsController.Execute(new AttackAction(gameController.gameState, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
                 }
                 else
                 {
@@ -76,8 +87,7 @@ public class InputController : Singleton<InputController>
                 if (selectionUnit != null)
                 {
                     Vector2Int pos = new Vector2Int((int)hit.point.x, (int)hit.point.z);
-                    var gState = GameController.Instance.gameState;
-                    ActionsController.Instance.Execute(new MoveAction(gState, gState.CurrentPlayerId, selectionUnit.state.unitId, pos));
+                    actionsController.Execute(new MoveAction(gameController.gameState, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.state.unitId, pos));
                     DeselectUnit();
                 }
             }
