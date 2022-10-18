@@ -44,5 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f8fdca75c255ea4683408ab6d872a58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameStartSettings:
+    players: 3
   units: {fileID: 11400000, guid: cd0130d1ac0f4f24096059d9ff4b3653, type: 2}
   database: {fileID: 11400000, guid: 84c121f58bacd834da70471bfd1d776b, type: 2}
+  selectionIndicator: {fileID: 1981036740956878279, guid: 8ec3aae370ef55043b0806c63f8a9914, type: 3}
+  movementIndicator: {fileID: 3819641163072302351, guid: d04986c60c760834ba1efd641d882764, type: 3}

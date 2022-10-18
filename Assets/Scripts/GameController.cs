@@ -6,27 +6,27 @@ using System.Linq;
 using UnityEngine;
 using Zenject;
 
-public class GameController : MonoBehaviour
+public class GameController : IInitializable
 {
-    [OdinSerialize]
-    [field:NonSerialized]
     public GameState gameState;
 
     public event Action<GameState> OnFinishedTurn;
     public event Action<GameState> OnGameBegun;
 
     private UnitsController _unitsController;
-    public GameStartSettings gameStartSettings;
+    private GameStartSettings gameStartSettings;
     
     [Inject]
-    public void Construct(UnitsController _unitsController)
+    public void Construct(UnitsController _unitsController, GameStartSettings gameStartSettings)
     {
+        this.gameStartSettings = gameStartSettings;
         this._unitsController = _unitsController;
     }
 
-    private void Awake()
+    public void Initialize()
     {
         StartNewGame(gameStartSettings);
+        OnGameBegun?.Invoke(gameState);
     }
 
     public void StartNewGame(GameStartSettings settings)
@@ -68,12 +68,6 @@ public class GameController : MonoBehaviour
 
         state.CurrentPlayerIndex = 0;
         state.CurrentPlayerId = state.players.Values.ToList()[0].Id;
-    }
-
-    private IEnumerator Start()
-    {
-        yield return 0;
-        OnGameBegun?.Invoke(gameState);
     }
 
     public void FinishTurn()

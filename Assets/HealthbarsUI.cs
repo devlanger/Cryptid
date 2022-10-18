@@ -10,7 +10,13 @@ public class HealthbarsUI : MonoBehaviour
 
     private Dictionary<string, UnitHealthbar> healthbars = new Dictionary<string, UnitHealthbar>();
 
-    [Inject] private UnitsController _unitsController;
+    private UnitsController _unitsController;
+
+    [Inject]
+    public void Construct(UnitsController _unitsController) 
+    {
+        this._unitsController = _unitsController;
+    }
 
     private void Awake()
     {

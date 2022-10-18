@@ -92,7 +92,7 @@ public class AttackAction : GameAction
                     {
                         s.onComplete += () => 
                         {
-                            gameController.StartCoroutine(x(unitTarget.UnitId)); 
+                            unitAttacker.StartCoroutine(x(unitTarget.UnitId)); 
                         };
                     }
                     else

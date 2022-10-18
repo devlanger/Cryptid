@@ -5,16 +5,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
 
-public class InputController : MonoBehaviour
+public class InputController : IInitializable, ITickable
 {
     private Unit selectionUnit;
     private GameController gameController;
     private ActionsController actionsController;
     private UnitsController unitsController;
+    private CameraController cameraController;
 
-    [SerializeField] private GameObject selectionIndicator;
-    [SerializeField] private GameObject movementIndicator;
-    [SerializeField] private CameraController cameraController;
+    private GameObject selectionIndicatorPrefab;
+    private GameObject movementIndicatorPrefab;
+
+    private GameObject selectionIndicator;
+    private GameObject movementIndicator;
 
     [Inject]
     public void Construct(UnitsController unitsController, GameController gameController, ActionsController actionsController)
@@ -24,8 +27,17 @@ public class InputController : MonoBehaviour
         this.unitsController = unitsController;
     }
 
-    private void Awake()
+    public InputController(GameObject selectionIndicator, GameObject movementIndicator)
     {
+        this.selectionIndicatorPrefab = selectionIndicator;
+        this.movementIndicatorPrefab = movementIndicator;
+    }
+
+    public void Initialize()
+    {
+        this.selectionIndicator = GameObject.Instantiate(selectionIndicatorPrefab);
+        this.movementIndicator = GameObject.Instantiate(movementIndicatorPrefab);
+        cameraController = GameObject.FindObjectOfType<CameraController>();
         gameController.OnFinishedTurn += Instance_OnFinishedTurn;
     }
 
@@ -34,7 +46,7 @@ public class InputController : MonoBehaviour
         DeselectUnit();
     }
 
-    void Update()
+    public void Tick()
     {
         if(EventSystem.current.IsPointerOverGameObject())
         {
