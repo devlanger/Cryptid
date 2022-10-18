@@ -5,8 +5,16 @@ using UnityEngine;
 public class SoundsController : Singleton<SoundsController>
 {
     public AudioSource source;
-
     public Dictionary<SoundId, AudioClip> clips = new Dictionary<SoundId, AudioClip>();
+
+    public SoundsController.Settings settings;
+
+    [System.Serializable]
+    public class Settings
+    {
+        public AudioSource source;
+        public Dictionary<SoundId, AudioClip> clips = new Dictionary<SoundId, AudioClip>();
+    }
 
     public void PlayClip(AudioClip clip)
     {

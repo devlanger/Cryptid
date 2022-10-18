@@ -18,6 +18,7 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 58b4e64e9bf825c43888abe4460e0554, type: 2}
     - {fileID: 11400000, guid: 36e10d4538fb3fd4989b876796dd4297, type: 2}
+    - {fileID: 11400000, guid: 240212c4f7c0a8c4d96f7e1d39a65067, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -79,5 +80,35 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  units:
-  - {fileID: 11400000, guid: 240212c4f7c0a8c4d96f7e1d39a65067, type: 2}
+    - Name: units
+      Entry: 7
+      Data: 2|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[UnitScriptable,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 3|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

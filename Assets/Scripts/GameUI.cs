@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,7 +15,11 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Button exitButton;
     [SerializeField] private Button finishTurnButton;
     [SerializeField] private Button optionsButton;
-    [SerializeField] private Text turnText;
+    [SerializeField] private TextMeshProUGUI turnText;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI experienceText;
+    [SerializeField] private Slider experienceSlider;
+
     private GameController gameController;
 
     [Inject]
@@ -27,6 +32,7 @@ public class GameUI : MonoBehaviour
     {
         Instance_OnGameStateChanged(gameController.gameState);
         gameController.OnFinishedTurn += Instance_OnGameStateChanged;
+        gameController.OnGameUpdated += Instance_OnGameStateChanged;
 
         optionsButton.onClick.AddListener(OptionsClick);
         exitButton.onClick.AddListener(ExitToMenu);
@@ -50,6 +56,12 @@ public class GameUI : MonoBehaviour
 
     private void Instance_OnGameStateChanged(GameState obj)
     {
-        turnText.text = $"Turn {Environment.NewLine}{obj.TurnNumber}";
+        Player player = obj.GetCurrentPlayer();
+        
+        turnText.SetText($"Turn {Environment.NewLine}{obj.TurnNumber}");
+        levelText.SetText($"Level {Environment.NewLine}{player.Level}");
+        experienceText.SetText($"{player.Experience}/100");
+        
+        experienceSlider.value = player.Experience;
     }
 }

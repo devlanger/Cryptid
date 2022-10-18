@@ -8,6 +8,7 @@ using Zenject;
 public class InputController : IInitializable, ITickable
 {
     private Unit selectionUnit;
+    private PopupsController popupsController;
     private GameController gameController;
     private ActionsController actionsController;
     private UnitsController unitsController;
@@ -20,8 +21,9 @@ public class InputController : IInitializable, ITickable
     private GameObject movementIndicator;
 
     [Inject]
-    public void Construct(UnitsController unitsController, GameController gameController, ActionsController actionsController)
+    public void Construct(UnitsController unitsController, GameController gameController, ActionsController actionsController, PopupsController popupsController)
     {
+        this.popupsController = popupsController;
         this.gameController = gameController;
         this.actionsController = actionsController;
         this.unitsController = unitsController;
@@ -73,7 +75,7 @@ public class InputController : IInitializable, ITickable
             {
                 if (selectionUnit != null)
                 {
-                    actionsController.Execute(new AttackAction(gameController.gameState, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
+                    actionsController.Execute(new AttackAction(gameController.gameState, popupsController, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
                 }
                 else
                 {

@@ -66,7 +66,7 @@ public class UnitsController
         state.type = settings.type;
         state.posX = settings.spawnPoint.x;
         state.posZ = settings.spawnPoint.y;
-        state.health = 3;
+        state.health = 10;
         state.minDmg = 1;
         state.maxDmg = 2;
 

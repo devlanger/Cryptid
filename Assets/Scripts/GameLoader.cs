@@ -15,12 +15,17 @@ public class GameLoader : MonoInstaller
     public GameObject selectionIndicator;
     public GameObject movementIndicator;
 
+    [OdinSerialize]
+    public SoundsController.Settings soundSettings;
+
     public override void InstallBindings()
     {
         Container.BindInstance(units);
         Container.BindInstance(database);
         Container.BindInstance(gameStartSettings);
+        Container.BindInstance(soundSettings);
 
+        Container.Bind<PopupsController>().AsSingle();
         Container.Bind<ActionsController>().AsSingle();
         Container.Bind<DatabaseController>().AsSingle();
         Container.Bind<UnitsController>().AsSingle();

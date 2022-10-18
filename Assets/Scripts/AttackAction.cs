@@ -10,6 +10,7 @@ using static UnityEngine.UI.CanvasScaler;
 public class AttackAction : GameAction
 {
     private UnitsController _unitsController;
+    private PopupsController popupsController;
 
     public override bool CanExecute(GameState state)    
     {
@@ -43,11 +44,21 @@ public class AttackAction : GameAction
 
             if(Vector3.Distance(unit.transform.position, unitTarget.transform.position) > 3)
             {
+                popupsController.ShowPopup(new PopupSettings()
+                {
+                    text = "You are too far away!",
+                    color = Color.red,
+                });
                 return false;
             }
 
             if(unit.state.attacked)
             {
+                popupsController.ShowPopup(new PopupSettings()
+                {
+                    text = "You cannot attack anymore.",
+                    color = Color.red,
+                });
                 return false;
             }
         }
@@ -61,10 +72,11 @@ public class AttackAction : GameAction
     private ActionsController actionsController;
     private GameController gameController;
 
-    public AttackAction(GameState gameState, GameController gameController, ActionsController actionsController, UnitsController unitsController, 
+    public AttackAction(GameState gameState, PopupsController popupsController, GameController gameController, ActionsController actionsController, UnitsController unitsController, 
         string playerId, string unitId, string targetUnitId) : base(gameState, playerId)
     {
         _unitsController = unitsController;
+        this.popupsController = popupsController;
         this.gameController = gameController;
         this.actionsController = actionsController;
         this.unitId = unitId;
@@ -94,12 +106,14 @@ public class AttackAction : GameAction
                         {
                             unitAttacker.StartCoroutine(x(unitTarget.UnitId)); 
                         };
+
+                        actionsController.Execute(new DefeatRewardAction(gameState, gameController, actionsController, _unitsController, playerId, unitId, targetUnitId));
                     }
                     else
                     {
                         s.onComplete += () =>
                         {
-                            actionsController.Execute(new AttackAction(state, gameController, actionsController, _unitsController, "", unitTarget.UnitId, unitAttacker.UnitId));
+                            actionsController.Execute(new AttackAction(state, popupsController, gameController, actionsController, _unitsController, "", unitTarget.UnitId, unitAttacker.UnitId));
                         };
                     }
                     break;
@@ -109,13 +123,14 @@ public class AttackAction : GameAction
                     break;
                 case UnitType.CHEST:
                     SoundsController.Instance.PlaySound(SoundId.LOOT_PICKUP);
-                    string playerId = unitAttacker.state.ownerId;
                     var backpack = gameController.gameState.GetCurrentPlayerBackpack();
                     backpack.AddItem(new ItemState()
                     {
                         itemBaseId = UnityEngine.Random.Range(1, 4)
                     });
+                    gameController.RaiseUpdateEvent();
                     unitTarget.Die();
+                    
                     break;
                 default:
                     break;

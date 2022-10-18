@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Zenject;
@@ -7,6 +8,8 @@ using Zenject.Asteroids;
 
 public class BackpackUI : ViewUI
 {
+    [SerializeField] private TextMeshProUGUI goldText;
+    
     private ItemButton[] buttons;
     private GameController gameController;
     private DatabaseController databaseController;
@@ -27,6 +30,7 @@ public class BackpackUI : ViewUI
         }
 
         gameController.OnGameBegun += Instance_OnGameBegun;
+        gameController.OnGameUpdated += Instance_OnFinishedTurn;
     }
 
     private void Instance_OnGameBegun(GameState obj)
@@ -48,5 +52,7 @@ public class BackpackUI : ViewUI
                 buttons[item.Key].Fill(itemData);
             }
         }
+
+        goldText.SetText($"{obj.GetCurrentPlayer().Gold}");
     }
 }

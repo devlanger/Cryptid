@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Sirenix.Serialization;
 using System;
 using System.Collections;
@@ -12,6 +13,7 @@ public class GameController : IInitializable
 
     public event Action<GameState> OnFinishedTurn;
     public event Action<GameState> OnGameBegun;
+    public event Action<GameState> OnGameUpdated;
 
     private UnitsController _unitsController;
     private GameStartSettings gameStartSettings;
@@ -53,6 +55,7 @@ public class GameController : IInitializable
         {
             _unitsController.SpawnUnit(new UnitSpawnSettings()
             {
+                baseId = 1,
                 ownerId = "",
                 type = UnitType.MONSTER,
                 spawnPoint = new Vector2Int(UnityEngine.Random.Range(-9, 9), UnityEngine.Random.Range(7, 27))
@@ -74,6 +77,11 @@ public class GameController : IInitializable
     {
         gameState.FinishTurn();
         OnFinishedTurn?.Invoke(gameState);
+    }
+
+    public void RaiseUpdateEvent()
+    {
+        OnGameUpdated?.Invoke(gameState);
     }
 }
 
@@ -116,6 +124,11 @@ public class GameState
     {
         return backpacks[CurrentPlayerId];
     }
+
+    public Player GetCurrentPlayer()
+    {
+        return players[CurrentPlayerId];
+    }
 }
 
 public class Player
@@ -127,6 +140,10 @@ public class Player
 
     public string Id;
     public string Name;
+    public int Gold = 0;
+    public int Level = 1;
+    public int Experience = 0;
+
 }
 
 [System.Serializable]
