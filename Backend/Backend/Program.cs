@@ -5,8 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string connPath = "DefaultConnection";
+string? conn = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+if(conn != null)
+{
+    connPath = conn;
+}
+
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString(connPath);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 

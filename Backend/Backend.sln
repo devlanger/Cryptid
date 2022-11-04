@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendShared", "BackendShared\BackendShared.csproj", "{99B9B8B0-DE6B-4EFE-97DE-FAD0A1FD4FB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend.IntegrationTest", "Backend.IntegrationTest\Backend.IntegrationTest.csproj", "{5842C661-183E-489C-B49D-CEEBE1204C5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend.IntegrationTest", "Backend.IntegrationTest\Backend.IntegrationTest.csproj", "{5842C661-183E-489C-B49D-CEEBE1204C5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
