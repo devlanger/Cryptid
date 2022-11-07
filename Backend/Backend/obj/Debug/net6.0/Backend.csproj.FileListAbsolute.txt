@@ -71,3 +71,15 @@ C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\
 C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\obj\Debug\net6.0\ref\Backend.dll
 C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\BackendShared.dll
 C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\BackendShared.pdb
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\System.Web.Mvc.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\System.Web.Razor.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\System.Web.Helpers.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\System.Web.WebPages.Deployment.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\System.Web.WebPages.Razor.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\System.Web.WebPages.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\Microsoft.Web.Infrastructure.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Langer\Documents\Repositories\Personal\Dungeon-Madness\Backend\Backend\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll

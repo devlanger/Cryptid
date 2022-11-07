@@ -1,0 +1,19 @@
+<button (click)="createNewPlayer()">Create New Player</button>
+
+<table>
+  <thead>
+    <th>Id</th>
+    <th>Nickname</th>
+    <th>Role</th>
+  </thead>
+  <tbody>
+    <tr *ngFor="let player of players">
+      <td>{{ player.id }}</td>
+      <td>{{ player.nickname }}</td>
+      <td>{{ player.role }}</td>
+      <td><button (click)="editPlayer(player)">Edit</button></td>
+    </tr>
+  </tbody>
+</table>
+
+<app-edit-player [player]="playerToEdit" (playersUpdated)="updatePlayersList($event)"></app-edit-player>

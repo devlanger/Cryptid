@@ -1,0 +1,14 @@
+<p>edit-player works!</p>
+
+<div *ngIf="player">
+    <h2>{{player.nickname}}</h2>
+    <div>
+        Nickname: 
+        <input [(ngModel)]="player.nickname" placeholder="Nickname"/>
+
+        Role: 
+        <input [(ngModel)]="player.role" placeholder="Role"/>
+    </div>
+    <button (click)="updatePlayer(player)" *ngIf="player.id">Save</button>
+    <button (click)="createPlayer(player)" *ngIf="!player.id">Create</button>
+</div>

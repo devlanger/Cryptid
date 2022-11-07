@@ -7,5 +7,8 @@ namespace Backend.Data
     {
         [Key]
         public Guid Id { get; set; }
+
+        public string Nickname { get; set; } = String.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }
