@@ -1129,6 +1129,22 @@
         "runtime": {
           "bin/placeholder/BackendShared.dll": {}
         }
+      },
+      "Cryptid.Backend/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.17.0"
+        },
+        "compile": {
+          "bin/placeholder/Cryptid.Backend.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Cryptid.Backend.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       }
     }
   },
@@ -2897,11 +2913,17 @@
       "type": "project",
       "path": "../BackendShared/BackendShared.csproj",
       "msbuildProject": "../BackendShared/BackendShared.csproj"
+    },
+    "Cryptid.Backend/1.0.0": {
+      "type": "project",
+      "path": "../Cryptid.Backend/Cryptid.Backend.csproj",
+      "msbuildProject": "../Cryptid.Backend/Cryptid.Backend.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
       "BackendShared >= 1.0.0",
+      "Cryptid.Backend >= 1.0.0",
       "Microsoft.AspNet.Mvc >= 5.2.9",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 6.0.9",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 6.0.9",
@@ -2948,6 +2970,9 @@
           "projectReferences": {
             "C:\\Users\\Langer\\Documents\\Repositories\\Personal\\Dungeon-Madness\\Backend\\BackendShared\\BackendShared.csproj": {
               "projectPath": "C:\\Users\\Langer\\Documents\\Repositories\\Personal\\Dungeon-Madness\\Backend\\BackendShared\\BackendShared.csproj"
+            },
+            "C:\\Users\\Langer\\Documents\\Repositories\\Personal\\Dungeon-Madness\\Backend\\Cryptid.Backend\\Cryptid.Backend.csproj": {
+              "projectPath": "C:\\Users\\Langer\\Documents\\Repositories\\Personal\\Dungeon-Madness\\Backend\\Cryptid.Backend\\Cryptid.Backend.csproj"
             }
           }
         }

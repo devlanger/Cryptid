@@ -1,10 +1,16 @@
-﻿using BackendShared;
+﻿using Backend.Logic;
+using BackendShared;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Backend.Hubs
 {
     public class GameHub : Hub, ICryptidHubClientListener
     {
+        public GameHub(IGamesController gamesController)
+        {
+
+        }
+
         public override Task OnConnectedAsync()
         {
             Console.WriteLine($"Connected: {Context.ConnectionId}");
