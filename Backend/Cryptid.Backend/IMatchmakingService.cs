@@ -60,8 +60,8 @@ namespace Cryptid.Backend
             var game = gamesController.CreateGame(GameType.TEAM);
             //game.AddPlayers();
             
-            await hub.Clients.Client(playerId).SendAsync("found_player", player);
-            await hub.Clients.Client(player).SendAsync("found_player", playerId);
+            await hub.Clients.Client(playerId).SendAsync("ChangeMenuState", 2);
+            await hub.Clients.Client(player).SendAsync("ChangeMenuState", 2);
         }
     }
 }

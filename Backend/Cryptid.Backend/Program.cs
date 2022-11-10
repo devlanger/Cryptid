@@ -15,9 +15,8 @@ builder.Host.ConfigureLogging(logging =>
 builder.Services.AddSingleton<IGameFactory, GameFactory>();
 builder.Services.AddSingleton<IGamesController, GamesController>();
 builder.Services.AddSingleton<MatchmakingService>();
-
-builder.Services.AddHostedService<CryptidBackendWorker>();
 builder.Services.AddSignalR();
+builder.Services.AddHostedService<CryptidBackendWorker>();
 
 var app = builder.Build();
 

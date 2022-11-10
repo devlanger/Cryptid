@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BackendShared\BackendShared.csproj" />
     <ProjectReference Include="..\Cryptid.Backend\Cryptid.Backend.csproj" />
   </ItemGroup>
 

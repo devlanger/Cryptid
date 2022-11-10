@@ -3372,7 +3372,6 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
-          "BackendShared": "1.0.0",
           "Cryptid.Backend": "1.0.0",
           "Microsoft.AspNet.Mvc": "5.2.9",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "6.0.9",
@@ -3394,20 +3393,11 @@
           "Microsoft.AspNetCore.App"
         ]
       },
-      "BackendShared/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
-        "compile": {
-          "bin/placeholder/BackendShared.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/BackendShared.dll": {}
-        }
-      },
       "Cryptid.Backend/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
+          "Cryptid.Shared": "1.0.0",
           "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.17.0"
         },
         "compile": {
@@ -3419,6 +3409,16 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "Cryptid.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Cryptid.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Cryptid.Shared.dll": {}
+        }
       }
     }
   },
@@ -9985,15 +9985,15 @@
       "path": "../Backend/Backend.csproj",
       "msbuildProject": "../Backend/Backend.csproj"
     },
-    "BackendShared/1.0.0": {
-      "type": "project",
-      "path": "../BackendShared/BackendShared.csproj",
-      "msbuildProject": "../BackendShared/BackendShared.csproj"
-    },
     "Cryptid.Backend/1.0.0": {
       "type": "project",
       "path": "../Cryptid.Backend/Cryptid.Backend.csproj",
       "msbuildProject": "../Cryptid.Backend/Cryptid.Backend.csproj"
+    },
+    "Cryptid.Shared/1.0.0": {
+      "type": "project",
+      "path": "../Cryptid.Shared/Cryptid.Shared.csproj",
+      "msbuildProject": "../Cryptid.Shared/Cryptid.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {

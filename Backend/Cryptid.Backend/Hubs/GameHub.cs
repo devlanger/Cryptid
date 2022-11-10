@@ -1,9 +1,10 @@
 ﻿using Backend.Logic;
+using Cryptid.Shared;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Cryptid.Backend.Hubs
 {
-    public class GameHub : Hub
+    public class GameHub : Hub<IGameClient>, IGameServer
     {
         private readonly IGamesController gamesController;
         private readonly MatchmakingService matchmakingService;
@@ -18,9 +19,8 @@ namespace Cryptid.Backend.Hubs
         public override Task OnConnectedAsync()
         {
             Console.WriteLine($"Connected: {Context.ConnectionId} {gamesController.GamesAmount()}");
-            Clients.Client(Context.ConnectionId).SendAsync("ReceiveGame", "127.0.0.1:1999");
+            Clients.Client(Context.ConnectionId).SendMessage("ReceiveGame", "127.0.0.1:1999");
 
-            matchmakingService.AddPlayerToMatchmaking(Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
@@ -31,14 +31,18 @@ namespace Cryptid.Backend.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendMessage(string user, string message)
+        #region Commands 
+        public async void AskToJoinMatchmaking()
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            await Clients.Client(Context.ConnectionId).ChangeMenuState(1);
+            matchmakingService.AddPlayerToMatchmaking(Context.ConnectionId);
         }
 
-        public async Task SearchForGame()
+        public async void AskToRemoveMatchmaking()
         {
-            await Clients.All.SendAsync("ReceiveGame", "127.0.0.1:1999");
+            await Clients.Client(Context.ConnectionId).ChangeMenuState(0);
+            matchmakingService.RemovePlayerMatchmaking(Context.ConnectionId);
         }
+        #endregion
     }
 }
