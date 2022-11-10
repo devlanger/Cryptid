@@ -13,12 +13,39 @@ public class MenuUI : MonoBehaviour
     [SerializeField] private Button exitButton;
     [SerializeField] private Text versionText;
 
+    [SerializeField] MatchmakingWaitUI matchmakingWaitUi;
+
     private void Awake()
     {
         startNewButton.onClick.AddListener(StartNew);
+        multiplayerButton.onClick.AddListener(OnlineGame);
         exitButton.onClick.AddListener(Exit);
 
         versionText.text = $"Ver {Application.version}";
+
+        FindObjectOfType<MenuStateController>().OnMenuStateChanged += MenuUI_OnMenuStateChanged;
+    }
+
+    private void MenuUI_OnMenuStateChanged(byte obj)
+    {
+        switch (obj)
+        {
+            case (byte)0:
+                matchmakingWaitUi.Deactivate();
+                break;
+            case (byte)1:
+                matchmakingWaitUi.Activate();
+                break;
+            case (byte)2:
+                SceneManager.LoadScene(1);
+                break;
+        }
+    }
+
+    private void OnlineGame()
+    {
+        ConnectionManager.Instance.AskToJoinMatchmaking();
+        matchmakingWaitUi.Activate();
     }
 
     private void Exit()
