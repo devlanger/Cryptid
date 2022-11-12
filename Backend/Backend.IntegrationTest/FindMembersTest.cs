@@ -34,16 +34,6 @@ namespace Backend.IntegrationTest
         [InlineData("Test")]
         public void GetUserDataTest(string name)
         {
-            //Arrange
-            _usersMockRepository.Setup(repo => repo.GetUserData(name))
-                .Returns("Test");
-
-            //Act
-            var result = _controller.GetUserData(name);
-
-            //Assert
-            Assert.IsType<string>(result);
-            Assert.Equal(result, name);
         }
 
 

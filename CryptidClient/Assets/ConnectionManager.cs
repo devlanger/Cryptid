@@ -8,6 +8,7 @@ using System;
 using Cryptid.Shared;
 using System.Threading.Tasks;
 
+[DefaultExecutionOrder(-1)]
 public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
 {
     public static ConnectionManager Instance { get; private set; }
@@ -18,7 +19,15 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
 
     private void Awake()
     {
-        Instance = this;
+        if(Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public async ValueTask DisposeAsync()
@@ -69,6 +78,11 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
     public async void AskToRemoveMatchmaking()
     {
         await connection.SendAsync(nameof(AskToRemoveMatchmaking));
+    }
+
+    public async void LoginWithAccessToken(string userId, string accessToken)
+    {
+        await connection.SendAsync(nameof(LoginWithAccessToken), userId, accessToken);
     }
     #endregion
 

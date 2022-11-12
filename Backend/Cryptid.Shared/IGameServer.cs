@@ -7,7 +7,8 @@ namespace Cryptid.Shared
 {
     public interface IGameServer
     {
-        void AskToJoinMatchmaking();
-        void AskToRemoveMatchmaking();
+        Task AskToJoinMatchmaking();
+        Task AskToRemoveMatchmaking();
+        Task LoginWithAccessToken(string userId, string token);
     }
 }

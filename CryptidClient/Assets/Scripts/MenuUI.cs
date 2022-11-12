@@ -1,3 +1,5 @@
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,8 +8,9 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MenuUI : MonoBehaviour
+public class MenuUI : ViewUI
 {
+    [SerializeField] private MenuRouterUI router;
     [SerializeField] private Button startNewButton;
     [SerializeField] private Button multiplayerButton;
     [SerializeField] private Button exitButton;
@@ -31,10 +34,10 @@ public class MenuUI : MonoBehaviour
         switch (obj)
         {
             case (byte)0:
-                matchmakingWaitUi.Deactivate();
+                //matchmakingWaitUi.Deactivate();
                 break;
             case (byte)1:
-                matchmakingWaitUi.Activate();
+                //matchmakingWaitUi.Activate();
                 break;
             case (byte)2:
                 SceneManager.LoadScene(1);
@@ -44,8 +47,7 @@ public class MenuUI : MonoBehaviour
 
     private void OnlineGame()
     {
-        ConnectionManager.Instance.AskToJoinMatchmaking();
-        matchmakingWaitUi.Activate();
+        router.GoToView("multiplayer");
     }
 
     private void Exit()

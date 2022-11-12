@@ -7,20 +7,17 @@ using System.Threading.Tasks;
 
 namespace Backend.Logic
 {
-    public class CryptidBackendWorker : BackgroundService
+    public class CryptidBackendService : BackgroundService
     {
-        private readonly IGamesController gamesController;
-        private readonly MatchmakingService matchmakingService;
-        private readonly ILogger<CryptidBackendWorker> logger;
+        private readonly ILogger<CryptidBackendService> logger;
+        private readonly IServiceProvider services;
 
-        public CryptidBackendWorker(
-            ILogger<CryptidBackendWorker> logger, 
-            IGamesController gamesController,
-            MatchmakingService matchmakingService)
+        public CryptidBackendService(
+            ILogger<CryptidBackendService> logger, 
+            IServiceProvider services)
         {
-            this.gamesController = gamesController;
             this.logger = logger;
-            this.matchmakingService = matchmakingService;
+            this.services = services;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,8 +26,19 @@ namespace Backend.Logic
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                await matchmakingService.MatchPlayers();
+                await DoWork(stoppingToken);
                 await Task.Delay(3000, stoppingToken);
+            }
+        }
+
+        private async Task DoWork(CancellationToken stoppingToken)
+        {
+            using (var scope = services.CreateScope())
+            {
+                var matchmakingService = scope.ServiceProvider.GetRequiredService<MatchmakingService>();
+                var gamesControllerService = scope.ServiceProvider.GetRequiredService<IGamesController>();
+
+                await matchmakingService.MatchPlayers();
             }
         }
     }

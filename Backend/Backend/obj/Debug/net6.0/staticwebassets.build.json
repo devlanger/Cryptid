@@ -1,11 +1,23 @@
 {
   "Version": 1,
-  "Hash": "pio5SFaeGuz+0yCeBJ4D20a7TcGqD8WBAEKpQ18vQPo=",
+  "Hash": "EBXQn0ynoBIxxHe5LcmLHhrTUk+ucSKu5ZZNoWv2MVA=",
   "Source": "Backend",
   "BasePath": "_content/Backend",
   "Mode": "Default",
   "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Users\\Langer\\Documents\\Repositories\\Personal\\Dungeon-Madness\\Backend\\Cryptid.Backend\\Cryptid.Backend.csproj",
+      "Version": 2,
+      "Source": "Cryptid.Backend",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier"
+    }
+  ],
   "DiscoveryPatterns": [
     {
       "Name": "Backend\\wwwroot",

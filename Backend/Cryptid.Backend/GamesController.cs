@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Backend.Data;
+using Backend.Repositories;
+using Cryptid.Backend.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,55 +11,61 @@ namespace Backend.Logic
 {
     public interface IGamesController
     {
-        void RemoveGame(Guid gameId);
-        IGame CreateGame(GameType type);
-        bool TryGetGame(Guid gameId, out IGame game);
+        Task RemoveGame(Guid gameId);
+        Task<Game> CreateGame(GameType type);
+        Task<Game> GetGame(Guid gameId);
         int GamesAmount();
+        Task AddGameParticipants(Guid id, string playerId, string player);
     }
 
     public class GamesController : IGamesController 
     {
-        /// <summary>
-        /// Games currently running
-        /// </summary>
-        private Dictionary<Guid, IGame> activeGames = new Dictionary<Guid, IGame>();
-
         private readonly IGameFactory gamesFactory;
         private readonly ILogger<GamesController> logger;
+        private readonly GamesRepository gamesRepository;
 
         public GamesController(
             ILogger<GamesController> logger,
-            IGameFactory gamesFactory)
+            IGameFactory gamesFactory,
+            GamesRepository gamesRepository)
         {
             this.gamesFactory = gamesFactory;
             this.logger = logger;
+            this.gamesRepository = gamesRepository;
         }
 
-        public void RemoveGame(Guid gameId)
+        public async Task RemoveGame(Guid gameId)
         {
-            if(activeGames.ContainsKey(gameId))
-            {
-                activeGames.Remove(gameId);
-            }
+            await gamesRepository.DeleteGame(gameId);
         }
 
-        public IGame CreateGame(GameType type)
+        public async Task AddGameParticipants(Guid id, string playerId, string player)
         {
-            var game = gamesFactory.CreateGame(type);
-            activeGames.Add(game.Id, game);
+            await gamesRepository.AddGameParticipants(id, playerId, player);
+        }
 
+        public async Task<Game> CreateGame(GameType type)
+        {
+            var game = (Game)gamesFactory.CreateGame(type);
+            game.CurrentState = new GameState().GetCompressedState();
+            await gamesRepository.SaveGame(game);
             logger.LogInformation($"Create game id: {game.Id} type: {type}");
             return game;
         }
 
-        public bool TryGetGame(Guid gameId, out IGame game)
+        public async Task<Game> GetGame(Guid gameId)
         {
-            return activeGames.TryGetValue(gameId, out game);
+            return await gamesRepository.GetGame(gameId);
+        }
+
+        public async Task<List<Game>> GetAllGamesForPlayer(Guid playerId)
+        {
+            return await gamesRepository.GetAllGamesForPlayer(playerId);
         }
 
         public int GamesAmount()
         {
-            return activeGames.Count;
+            return 0;
         }
     }
 }

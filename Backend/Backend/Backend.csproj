@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cryptid.Backend\Cryptid.Backend.csproj" />
+    <ProjectReference Include="..\Cryptid.Shared\Cryptid.Shared.csproj" />
   </ItemGroup>
 
 </Project>

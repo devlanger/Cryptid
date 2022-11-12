@@ -1,19 +1,35 @@
 ﻿using Backend.Logic;
+using Backend.Repositories;
 using Cryptid.Shared;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using static Cryptid.Backend.AuthService;
 
 namespace Cryptid.Backend.Hubs
 {
     public class GameHub : Hub<IGameClient>, IGameServer
     {
+        private readonly ILogger<GameHub> logger;
         private readonly IGamesController gamesController;
         private readonly MatchmakingService matchmakingService;
+        private readonly AuthService authService;
+        private readonly IUsersRepository usersRepository;
 
         public GameHub(
-            IGamesController gamesController, MatchmakingService matchmakingService)
+            ILogger<GameHub> logger,
+            IGamesController gamesController, 
+            MatchmakingService matchmakingService,
+            AuthService authService,
+            IUsersRepository usersRepository)
         {
+            this.logger = logger;
             this.gamesController = gamesController;
             this.matchmakingService = matchmakingService;
+            this.authService = authService;
+            this.usersRepository = usersRepository;
         }
 
         public override Task OnConnectedAsync()
@@ -32,14 +48,50 @@ namespace Cryptid.Backend.Hubs
         }
 
         #region Commands 
-        public async void AskToJoinMatchmaking()
+        public async Task AskToJoinMatchmaking()
         {
+            //TODO: Check if logged
+            if (!Context.Items.ContainsKey("id"))
+            {
+                return;
+            }
+
+            logger.LogInformation($"{Context.ConnectionId} has joined the matchmaking queue");
             await Clients.Client(Context.ConnectionId).ChangeMenuState(1);
             matchmakingService.AddPlayerToMatchmaking(Context.ConnectionId);
         }
 
-        public async void AskToRemoveMatchmaking()
+        public async Task AskToRemoveMatchmaking()
         {
+            logger.LogInformation($"{Context.ConnectionId} has left the matchmaking queue");
+            await Clients.Client(Context.ConnectionId).ChangeMenuState(0);
+            matchmakingService.RemovePlayerMatchmaking(Context.ConnectionId);
+        }
+
+        public async Task SetNickname(string nickname)
+        {
+            await Clients.Client(Context.ConnectionId).ChangeMenuState(0);
+        }
+
+        public async Task LoginWithAccessToken(string userId, string accessToken)
+        {
+            logger.LogInformation($"{Context.ConnectionId} has login with user id {userId}");
+            UnityAuthModel result = authService.Authenticate(userId, accessToken);
+            logger.LogInformation($"Login state: {result.id} {result.disabled}");
+
+            //TODO: CHECK IF - DISABLED IS LOGGED STATE?
+
+            if(result.id == "")
+            {
+                logger.LogInformation("Player isn't logged");
+            }
+            else
+            {
+                //gamesController.CreateGame(GameType.TEAM);
+                var p = await usersRepository.CreateOrLoginPlayer(userId);
+                Context.Items["id"] = p.Id;
+            }
+
             await Clients.Client(Context.ConnectionId).ChangeMenuState(0);
             matchmakingService.RemovePlayerMatchmaking(Context.ConnectionId);
         }

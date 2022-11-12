@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class MatchmakingWaitUI : ViewUI
 {
+    [SerializeField] private MenuRouterUI router;
     [SerializeField] private Button cancelButton;
 
     private void Awake()
@@ -13,9 +14,15 @@ public class MatchmakingWaitUI : ViewUI
         cancelButton.onClick.AddListener(Cancel);
     }
 
+    public override void Activate()
+    {
+        base.Activate();
+        ConnectionManager.Instance.AskToJoinMatchmaking();
+    }
+
     private void Cancel()
     {
         ConnectionManager.Instance.AskToRemoveMatchmaking();
-        Deactivate();
+        router.GoToView("main");
     }
 }
