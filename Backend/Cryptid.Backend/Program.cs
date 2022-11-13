@@ -57,11 +57,6 @@ var app = builder.Build();
 
 app.UseDeveloperExceptionPage();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-}
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
