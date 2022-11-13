@@ -157,10 +157,6 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
-            "JWT": {
-              "target": "Package",
-              "version": "[9.0.3, )"
-            },
             "MSBuildGitHash": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -170,10 +166,6 @@
             "Microsoft.AspNet.Mvc": {
               "target": "Package",
               "version": "[5.2.9, )"
-            },
-            "Microsoft.AspNetCore.Authentication.Google": {
-              "target": "Package",
-              "version": "[6.0.11, )"
             },
             "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
               "target": "Package",
