@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Best Games
-  productName: Dungeon Madness
+  companyName: ZGS
+  productName: Cryptid
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -134,7 +134,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.0.6
+  bundleVersion: 0.0.8
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -155,15 +155,15 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.BestGames.DungeonMadness
+    Android: com.zgs.cryptid
     Standalone: com.Best-Games.Dungeon-Madness
   buildNumber:
     Standalone: 0
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 22
+  AndroidBundleVersionCode: 4
+  AndroidMinSdkVersion: 31
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
@@ -246,7 +246,7 @@ PlayerSettings:
   useCustomBaseGradleTemplate: 0
   useCustomGradlePropertiesTemplate: 0
   useCustomProguardFile: 0
-  AndroidTargetArchitectures: 1
+  AndroidTargetArchitectures: 15
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
@@ -819,6 +819,7 @@ PlayerSettings:
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
+    Android: 1
     Standalone: 0
   il2cppCompilerConfiguration: {}
   managedStrippingLevel: {}
@@ -915,7 +916,7 @@ PlayerSettings:
   cloudProjectId: 0d249754-4ef3-4583-bb0f-8a8286dfaaaf
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Dungeon Madness (1)
+  projectName: Cryptid
   organizationId: planger
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

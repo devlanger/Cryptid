@@ -55,7 +55,7 @@ public class OptionsUI : ViewUI
     {
         AudioListener.volume = options.volumeLevel;
         QualitySettings.SetQualityLevel(options.qualityLevel);
-        RenderSettings.fog = options.fogLevel == 1;
+        //RenderSettings.fog = options.fogLevel == 1;
     }
 }
 
