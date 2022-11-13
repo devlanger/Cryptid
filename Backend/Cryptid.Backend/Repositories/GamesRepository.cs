@@ -3,7 +3,6 @@ using Backend.Logic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Numerics;
-using System.Web.Mvc;
 using System.Xml.Linq;
 
 namespace Backend.Repositories
