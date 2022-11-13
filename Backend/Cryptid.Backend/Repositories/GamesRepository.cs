@@ -1,9 +1,6 @@
 ﻿using Backend.Data;
 using Backend.Logic;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
-using System.Xml.Linq;
 
 namespace Backend.Repositories
 {

@@ -50,7 +50,17 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 //    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 //});
 
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 var app = builder.Build();
+
+app.UseDeveloperExceptionPage();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+}
 
 using (var scope = app.Services.CreateScope())
 {
