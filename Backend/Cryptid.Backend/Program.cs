@@ -27,10 +27,6 @@ builder.Host.ConfigureLogging(logging =>
 {
     //logging.ClearProviders();
     logging.AddConsole(); 
-    logging.AddEventLog(options =>
-    {
-        options.SourceName = "Cryptid.Backend";
-    });
 });
 
 
