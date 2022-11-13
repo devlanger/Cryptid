@@ -25,8 +25,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Host.ConfigureLogging(logging =>
 {
-    logging.ClearProviders();
-    logging.AddConsole();
+    //logging.ClearProviders();
+    logging.AddConsole(); 
+    logging.AddEventLog(options =>
+    {
+        options.SourceName = "Cryptid.Backend";
+    });
 });
 
 
