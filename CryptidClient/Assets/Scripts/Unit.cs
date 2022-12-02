@@ -1,3 +1,4 @@
+using Cryptid.Logic;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;

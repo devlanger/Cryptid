@@ -56,6 +56,10 @@ public class GameUI : MonoBehaviour
 
     private void Instance_OnGameStateChanged(GameState obj)
     {
+        if(obj == null)
+        {
+            return;
+        }
         Player player = obj.GetCurrentPlayer();
         
         turnText.SetText($"Turn {Environment.NewLine}{obj.TurnNumber}");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cryptid.Logic;
 using UnityEngine;
 using Zenject;
 
@@ -54,44 +55,22 @@ public class UnitsController
         }
     }
 
-    public void SpawnUnit(UnitSpawnSettings settings)
+    public void SpawnUnit(UnitState state)
     {
-        var inst = Unit.Instantiate(GetPrefab(settings));
+        var inst = Unit.Instantiate(GetPrefab(state.type));
         inst.Construct(gameController);
-        inst.transform.position = new Vector3(settings.spawnPoint.x, 1, settings.spawnPoint.y);
-        
-        var state = new UnitState();
-        state.unitId = System.Guid.NewGuid().ToString();
-        state.ownerId = settings.ownerId;
-        state.type = settings.type;
-        state.posX = settings.spawnPoint.x;
-        state.posZ = settings.spawnPoint.y;
-        state.health = 10;
-        state.minDmg = 1;
-        state.maxDmg = 2;
-
-        if (state.type == UnitType.MONSTER)
-        {
-            if(databaseController.Manager.GetUnit(settings.baseId, out var unitData))
-            {
-                state.health = unitData.health;
-                state.minDmg = unitData.minDamage;
-                state.maxDmg = unitData.maxDamage;
-            }
-        }
-
+        inst.transform.position = new Vector3(state.posX, 1, state.posZ);
         inst.UnitId = state.unitId;
-        gameController.gameState.unitStates.Add(state.unitId, state);
+        
         units.Add(state.unitId, inst);
-
         OnUnitSpawn?.Invoke(inst);
     }
 
-    private Unit GetPrefab(UnitSpawnSettings settings)
+    private Unit GetPrefab(UnitType type)
     {
-        if (prefabs.ContainsKey(settings.type))
+        if (prefabs.ContainsKey(type))
         {
-            return prefabs[settings.type];
+            return prefabs[type];
         }
 
         throw new NullReferenceException("The object prefab is missing in the UnitController");
@@ -109,21 +88,4 @@ public class UnitsController
         GameObject.Destroy(units[unitId].gameObject);
         units.Remove(unitId);
     }
-}
-
-public enum UnitType
-{
-    PLAYER = 1,
-    MONSTER = 2,
-    DROP = 3,
-    DOORS = 4,
-    CHEST = 5,
-}
-
-public class UnitSpawnSettings
-{
-    public string ownerId;
-    public int baseId;
-    public UnitType type;
-    public Vector2Int spawnPoint;
 }

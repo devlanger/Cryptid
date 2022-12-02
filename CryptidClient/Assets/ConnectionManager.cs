@@ -7,15 +7,30 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using Cryptid.Shared;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Zenject;
+using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-1)]
 public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
 {
     public static ConnectionManager Instance { get; private set; }
-
+    
     HubConnection connection;
+    [SerializeField] private bool useRemote = false;
     [SerializeField] private string ip = "https://localhost:7006/gameHub";
+    [SerializeField] private string remoteIp = "https://cryptid-backend.azurewebsites.net/gameHub";
+
+
     public bool IsConnected => connection.State == HubConnectionState.Connected;
+    
+    private GameController gameController;
+
+    [Inject]
+    public void Construct(GameController gameController)
+    {
+        this.gameController = gameController;
+    }
 
     private void Awake()
     {
@@ -41,7 +56,7 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
     public void Start()
     {
         connection = new HubConnectionBuilder()
-            .WithUrl(ip)
+            .WithUrl(useRemote ? remoteIp : ip)
             .WithAutomaticReconnect()
             .Build();
 
@@ -62,6 +77,7 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
         });
 
         connection.On<byte>(nameof(ChangeMenuState), ChangeMenuState);
+        connection.On<string>(nameof(LoadGameState), LoadGameState);
     }
 
     private async void Connect()
@@ -70,17 +86,17 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
     }
 
     #region Send
-    public async void AskToJoinMatchmaking()
+    public async Task AskToJoinMatchmaking()
     {
         await connection.SendAsync(nameof(AskToJoinMatchmaking));
     }
 
-    public async void AskToRemoveMatchmaking()
+    public async Task AskToRemoveMatchmaking()
     {
         await connection.SendAsync(nameof(AskToRemoveMatchmaking));
     }
 
-    public async void LoginWithAccessToken(string userId, string accessToken)
+    public async Task LoginWithAccessToken(string userId, string accessToken)
     {
         await connection.SendAsync(nameof(LoginWithAccessToken), userId, accessToken);
     }
@@ -90,6 +106,14 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
     public void ChangeMenuState(byte state)
     {
         FindObjectOfType<MenuStateController>().ChangeMenuState(state);
+    }
+
+    public void LoadGameState(string gameJson)
+    {
+        Debug.Log($"Load json {gameJson}");
+        GameState state = JsonConvert.DeserializeObject<GameState>(gameJson);
+        GameController.InitialState = state;
+        SceneManager.LoadScene(1);
     }
     #endregion
 }

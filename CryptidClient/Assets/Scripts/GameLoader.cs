@@ -33,10 +33,9 @@ public class GameLoader : MonoInstaller
         Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
         Container.BindInterfacesAndSelfTo<InputController>().AsSingle().WithArguments(selectionIndicator, movementIndicator);
     }
-}
 
-[System.Serializable]
-public class GameStartSettings
-{
-    public int players = 3;
+    private void OnDestroy() 
+    {
+
+    }
 }
