@@ -20,8 +20,6 @@ public class MenuUI : ViewUI
     [SerializeField] private Button exitButton;
     [SerializeField] private Text versionText;
 
-    [SerializeField] MatchmakingWaitUI matchmakingWaitUi;
-
     public static string Nickname { get; set; }
 
     private void Awake()
@@ -39,13 +37,13 @@ public class MenuUI : ViewUI
     public override void Activate()
     {
         base.Activate();
-        nicknameText.text = Nickname;
+        nicknameText.text = LoginUI.UserData.nickname;
     }
 
     private void Logout()
     {
         //TODO: Erase token
-
+        PlayerPrefs.DeleteKey("userdata");
         loginScreen.GoToLogin();
     }
 
@@ -64,7 +62,7 @@ public class MenuUI : ViewUI
 
     private void OnlineGame()
     {
-        router.GoToView("multiplayer");
+        router.GoToView("online_games");
     }
 
     private void Exit()

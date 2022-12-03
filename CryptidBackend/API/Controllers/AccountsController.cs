@@ -71,7 +71,8 @@ namespace API.Controllers
         {
             return new UserDto
             {
-                Token = "",
+                Token = "here will be token one day",
+                Id = user.Id,
                 Username = user.UserName,
                 Nickname = user.Nickname,
             };

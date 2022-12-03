@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -30,11 +31,22 @@ public class LoginUI : ViewUI
 
     private Coroutine c;
 
-    public string url;
+    public string url => NetworkConfiguration.API_URL;
+
+    public static string UserId { get; set; }
 
     private void Awake()
     {
-        GoToLogin();
+        string userDataJson = PlayerPrefs.GetString("userdata");
+        if(string.IsNullOrEmpty(userDataJson))
+        {
+            GoToLogin();
+        }
+        else
+        {
+            SetUserData(userDataJson);
+            GoToMainScreen();
+        }
     }
 
     public void GoToRegister()
@@ -105,7 +117,14 @@ public class LoginUI : ViewUI
         public string Password { get; set; }
     }
 
-    private IEnumerator Login(LoginDto loginDto)
+    public class UserDto
+    {
+        public string id;
+        public string nickname;
+        public string token;
+    }
+
+    public IEnumerator Login(LoginDto loginDto)
     {
         loadingIndicator.gameObject.SetActive(true);
         loadingIndicatorText.SetText("Loading...");
@@ -126,9 +145,7 @@ public class LoginUI : ViewUI
                 Debug.Log(www.downloadHandler.text);
                 loadingIndicator.gameObject.SetActive(false);
 
-                var json = JObject.Parse(www.downloadHandler.text);
-                MenuUI.Nickname = (string)json["nickname"];
-
+                SetUserData(www.downloadHandler.text);
                 GoToMainScreen();
             }
             else
@@ -139,6 +156,14 @@ public class LoginUI : ViewUI
         }
 
         c = null;
+    }
+
+    public static UserDto UserData { get; set; }
+
+    private void SetUserData(string json)
+    {
+        UserData = JsonConvert.DeserializeObject<UserDto>(json);
+        PlayerPrefs.SetString("userdata", json);
     }
 
     private IEnumerator Register(RegisterDto registerDto)

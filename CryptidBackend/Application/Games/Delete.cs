@@ -32,6 +32,7 @@ namespace Persistence.Repositories.Games
                     return null;
                 }
 
+                context.Games.Remove(game);
                 var result = await context.SaveChangesAsync() > 0;
 
                 if(!result)

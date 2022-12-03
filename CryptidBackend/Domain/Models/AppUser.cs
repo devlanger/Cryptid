@@ -9,5 +9,6 @@ namespace Domain.Models
     public class AppUser : IdentityUser
     {
         public string? Nickname { get; set; }
+        public ICollection<GameParticipant> Games { get; set; }
     }
 }

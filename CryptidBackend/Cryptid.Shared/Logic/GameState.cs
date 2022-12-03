@@ -15,6 +15,11 @@ public class GameState
     public Dictionary<string, Player> players = new Dictionary<string, Player>();
     public Dictionary<string, UnitState> unitStates = new Dictionary<string, UnitState>();
 
+    public bool GetUnit(string id, out UnitState state)
+    {
+        return unitStates.TryGetValue(id, out state);
+    }
+
     public void FinishTurn()
     {
         var list = players.Values.ToList();

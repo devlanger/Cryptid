@@ -4,7 +4,8 @@
     {
         public Guid Id { get; set; }
 
-        public byte[]? CurrentState { get; set; }
+        public string? CurrentState { get; set; }
+        public ICollection<GameParticipant> Participants { get; set; } = new List<GameParticipant>();
     }
 
     public interface IGame

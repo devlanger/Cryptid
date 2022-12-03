@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Backend.Logic;
 using Cryptid.Backend;
 using MediatR;
@@ -46,8 +47,10 @@ namespace API.Extensions
             services.AddScoped<IGameFactory, GameFactory>();
             services.AddScoped<MatchmakingService>();
             services.AddScoped<AuthService>();
+            services.AddScoped<ActionsController>();
             services.AddSignalR();
 
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddMediatR(typeof(Application.Games.List.Query).Assembly);
 
             return services;

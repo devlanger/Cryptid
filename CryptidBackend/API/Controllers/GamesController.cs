@@ -33,10 +33,17 @@ namespace API.Controllers
             this.logger = logger;
         }
 
-        [HttpPost("{id}")]
+        [HttpDelete("{id}")]
         public async Task DeleteGame(Guid id)
         {
             HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+        }
+        
+
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult> GetGamesForUser(string id)
+        {
+            return HandleResult(await Mediator.Send(new ListForUser.Query() { UserId = id }));
         }
 
         [HttpGet]

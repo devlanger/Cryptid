@@ -4,26 +4,31 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace CryptidClient.Assets.Scripts.MapLoader
 {
     public class GameStateSerializationHelper
     {
-        public static void Save (string prefKey, object serializableObject)
+        public static string Save (object serializableObject)
         {
-            MemoryStream memoryStream = new MemoryStream ();
-            new BinaryFormatter ().Serialize (memoryStream, serializableObject);
-            string tmp = System.Convert.ToBase64String (memoryStream.ToArray ());
+            // MemoryStream memoryStream = new MemoryStream ();
+            // new BinaryFormatter ().Serialize (memoryStream, serializableObject);
+            // string tmp = System.Convert.ToBase64String (memoryStream.ToArray ());
+            // return tmp;
+
+            return JsonConvert.SerializeObject(serializableObject);
         }
     
-        public static T Load<T>(string prefKey)
+        public static T Load<T>(string serializedData)
         {
-            string serializedData = "";
-            MemoryStream dataStream = new MemoryStream(System.Convert.FromBase64String(serializedData));
+            return JsonConvert.DeserializeObject<T>(serializedData);
+
+            // MemoryStream dataStream = new MemoryStream(System.Convert.FromBase64String(serializedData));
         
-            T deserializedObject = (T)new BinaryFormatter().Deserialize(dataStream);
+            // T deserializedObject = (T)new BinaryFormatter().Deserialize(dataStream);
         
-            return deserializedObject;
+            // return deserializedObject;
         }
     }
 }

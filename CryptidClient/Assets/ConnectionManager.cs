@@ -65,7 +65,7 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
         connection.Closed += async (error) =>
         {
             Debug.Log("Disconnected");
-            //await connection.StartAsync();
+            await connection.StartAsync();
         };
 
         connection.On<string>("ReceiveGame", (gameIp) =>
@@ -111,8 +111,7 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
     public void LoadGameState(string gameJson)
     {
         Debug.Log($"Load json {gameJson}");
-        GameState state = JsonConvert.DeserializeObject<GameState>(gameJson);
-        GameController.InitialState = state;
+        GameController.InitialState = JsonConvert.DeserializeObject<GameState>(gameJson);
         SceneManager.LoadScene(1);
     }
     #endregion

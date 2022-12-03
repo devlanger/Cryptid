@@ -23,6 +23,6 @@ public class MatchmakingWaitUI : ViewUI
     private void Cancel()
     {
         ConnectionManager.Instance.AskToRemoveMatchmaking();
-        router.GoToView("main");
+        router.GoToView("online_games");
     }
 }
