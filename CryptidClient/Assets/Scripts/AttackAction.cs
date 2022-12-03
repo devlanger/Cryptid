@@ -107,13 +107,13 @@ public class AttackAction : GameAction
                             unitAttacker.StartCoroutine(x(unitTarget.UnitId)); 
                         };
 
-                        actionsController.Execute(new DefeatRewardAction(gameState, gameController, actionsController, _unitsController, playerId, unitId, targetUnitId));
+                        //actionsController.Execute(new DefeatRewardAction(gameState, gameController, actionsController, _unitsController, playerId, unitId, targetUnitId));
                     }
                     else
                     {
                         s.onComplete += () =>
                         {
-                            actionsController.Execute(new AttackAction(state, popupsController, gameController, actionsController, _unitsController, "", unitTarget.UnitId, unitAttacker.UnitId));
+                            //actionsController.Execute(new AttackAction(state, popupsController, gameController, actionsController, _unitsController, "", unitTarget.UnitId, unitAttacker.UnitId));
                         };
                     }
                     break;

@@ -1,6 +1,7 @@
 ﻿using Application.Games;
 using Backend.Logic;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Repositories.Games;
 using System;
@@ -20,6 +21,7 @@ namespace API.Controllers
         Task AddGameParticipants(Guid id, string playerId, string player);
     }
 
+    [Authorize]
     public class GamesController : BaseApiController
     {
         private readonly IGameFactory gamesFactory;

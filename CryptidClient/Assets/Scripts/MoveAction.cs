@@ -4,11 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
+public class CommandBase
+{
+    public byte id;
+}
+
 public class MoveAction : GameAction
 {
     private UnitsController _unitsController;
 
-    public override bool CanExecute(GameState state)
+    public class Command : CommandBase
+    {
+        public int posX;
+        public int posZ;
+    }
+
+    public override bool CanExecute(GameState state, CommandBase command)
     {
         if (_unitsController.GetUnit(unitId, out Unit unit))
         {
@@ -34,7 +45,7 @@ public class MoveAction : GameAction
         }
 
 
-        return base.CanExecute(state);
+        return base.CanExecute(state, command);
     }
 
     private Vector2Int pos;
@@ -53,14 +64,15 @@ public class MoveAction : GameAction
         this.unitId = unitId;
     }
 
-    public override void Execute(GameState state)
+    public override void Execute(GameState state, CommandBase command)
     {
+        Command c = command as Command;
         if(_unitsController.GetUnit(unitId, out Unit unit))
         {
             unit.state.moved = true;
-            unit.state.posX = pos.x;
-            unit.state.posZ = pos.y;
-            unit.transform.DOMove(new Vector3(pos.x, 1, pos.y), 0.25f);
+            unit.state.posX = c.posX;
+            unit.state.posZ = c.posZ;
+            unit.transform.DOMove(new Vector3(c.posX, 1, c.posZ), 0.25f);
             if(UnityEngine.Random.Range(0, 2) == 0)
             {
                 SoundsController.Instance.PlaySound(SoundId.MOVE_2);

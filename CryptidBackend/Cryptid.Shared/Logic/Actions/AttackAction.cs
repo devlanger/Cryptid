@@ -8,12 +8,17 @@ public class AttackAction : GameAction
     private string unitId;
     private string targetUnitId;
 
+    public class Command : CommandBase
+    {
+
+    }
+
     public AttackAction(GameState gameState, string playerId) : base(gameState, playerId)
     {
 
     }
 
-    public override bool CanExecute(GameState state)    
+    public override bool CanExecute(GameState state, CommandBase command)    
     {
         if (state.GetUnit(unitId, out UnitState unit) && state.GetUnit(targetUnitId, out UnitState unitTarget))
         {
@@ -55,10 +60,10 @@ public class AttackAction : GameAction
         }
 
 
-        return base.CanExecute(state);
+        return base.CanExecute(state, command);
     }
 
-    public override void Execute(GameState state)
+    public override void Execute(GameState state, CommandBase command)
     {
         if(state.GetUnit(unitId, out UnitState unitAttacker) && state.GetUnit(targetUnitId, out UnitState unitTarget))
         {

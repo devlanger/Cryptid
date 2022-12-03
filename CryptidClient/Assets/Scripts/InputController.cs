@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
@@ -75,7 +76,7 @@ public class InputController : IInitializable, ITickable
             {
                 if (selectionUnit != null)
                 {
-                    actionsController.Execute(new AttackAction(gameController.gameState, popupsController, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
+                    //actionsController.Execute(new AttackAction(gameController.gameState, popupsController, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
                 }
                 else
                 {
@@ -101,7 +102,13 @@ public class InputController : IInitializable, ITickable
                 if (selectionUnit != null)
                 {
                     Vector2Int pos = new Vector2Int((int)hit.point.x, (int)hit.point.z);
-                    actionsController.Execute(new MoveAction(gameController.gameState, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.state.unitId, pos));
+                    ConnectionManager.Instance.SendActionCommand(new MoveAction.Command
+                    {
+                        id = 1,
+                        posX = pos.x,
+                        posZ = pos.y
+                    });
+                    //actionsController.Execute(new MoveAction(gameController.gameState, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.state.unitId, pos));
                     DeselectUnit();
                 }
             }

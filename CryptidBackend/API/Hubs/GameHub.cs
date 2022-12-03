@@ -1,12 +1,15 @@
 ﻿using Cryptid.Shared;
 using CryptidClient.Assets.Scripts.MapLoader;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Persistence.Data;
 using static Cryptid.Backend.AuthService;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Cryptid.Backend.Hubs
 {
+    [Authorize]
     public class GameHub : Hub<IGameClient>, IGameServer
     {
         private readonly ILogger<GameHub> logger;
@@ -87,6 +90,20 @@ namespace Cryptid.Backend.Hubs
             logger.LogInformation($"{Context.ConnectionId} has left the matchmaking queue");
             await Clients.Client(Context.ConnectionId).ChangeMenuState(0);
             matchmakingService.RemovePlayerMatchmaking(Context.ConnectionId);
+        }
+
+        public async Task SendActionCommand(string commandJson)
+        {
+            var command = new MoveAction.Command
+            {
+                id = 1,
+                unitId = "",
+                posX = 3,
+                posZ = 3
+            };
+
+            actionController.Execute(state, new MoveAction(state, command, ""), command);
+            await Clients.Client(Context.ConnectionId).HandleActionCommand(commandJson);
         }
 
         public async Task SetNickname(string nickname)

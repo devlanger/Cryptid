@@ -3,16 +3,13 @@ using System.Collections.Generic;
 
 public class ActionsController
 {
-    //public Stack<GameAction> actions = new Stack<GameAction>();
-
-    public void Execute(GameState state, GameAction action)
+    public void Execute(GameState state, GameAction action, CommandBase command)
     {
-        if(!action.CanExecute(state))
+        if(!action.CanExecute(state, command))
         {
             return;
         }
 
-        action.Execute(state);
-        //actions.Push(action);
+        action.Execute(state, command);
     }
 }

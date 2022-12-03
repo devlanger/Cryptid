@@ -91,6 +91,11 @@ public class ConnectionManager : MonoBehaviour, IGameServer, IAsyncDisposable
         await connection.SendAsync(nameof(AskToJoinMatchmaking));
     }
 
+    public async Task SendActionCommand(CommandBase command)
+    {
+        await connection.SendAsync(nameof(SendActionCommand), command);
+    }
+
     public async Task AskToRemoveMatchmaking()
     {
         await connection.SendAsync(nameof(AskToRemoveMatchmaking));

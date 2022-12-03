@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dto;
+using API.Services;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,16 @@ namespace API.Controllers
     {
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
+        private readonly TokenService tokenService;
 
         public AccountController(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            TokenService tokenService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.tokenService = tokenService;
         }
 
         [HttpPost("login")]
@@ -71,7 +75,7 @@ namespace API.Controllers
         {
             return new UserDto
             {
-                Token = "here will be token one day",
+                Token = tokenService.GenerateToken(user),
                 Id = user.Id,
                 Username = user.UserName,
                 Nickname = user.Nickname,

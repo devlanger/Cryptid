@@ -49,6 +49,8 @@ public class OnlineGamesUI : ViewUI
         string url = $"{NetworkConfiguration.API_URL}/api/games/user/{UserData.id}";
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
+            www.SetRequestHeader("Authorization", $"Bearer {UserData.token}");
+
             yield return www.SendWebRequest();
 
             if (www.responseCode == 200)

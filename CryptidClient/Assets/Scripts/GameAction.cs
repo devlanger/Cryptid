@@ -13,6 +13,6 @@ public abstract class GameAction
         this.playerId = playerId;
     }
 
-    public virtual bool CanExecute(GameState state) => true;
-    public abstract void Execute(GameState state);
+    public virtual bool CanExecute(GameState state, CommandBase command) => true;
+    public abstract void Execute(GameState state, CommandBase command);
 }
