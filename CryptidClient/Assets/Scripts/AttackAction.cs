@@ -7,7 +7,7 @@ using Zenject;
 using Zenject.Asteroids;
 using static UnityEngine.UI.CanvasScaler;
 
-public class AttackAction : GameAction
+/*public class AttackAction : GameAction
 {
     private UnitsController _unitsController;
     private PopupsController popupsController;
@@ -148,4 +148,4 @@ public class AttackAction : GameAction
             _unitsController.RemoveUnit(unitId);
         }
     }
-}
+}*/

@@ -4,12 +4,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Persistence.Data;
+using System.Security.Claims;
 using static Cryptid.Backend.AuthService;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Cryptid.Backend.Hubs
 {
-    [Authorize]
+    //[Authorize]
     public class GameHub : Hub<IGameClient>, IGameServer
     {
         private readonly ILogger<GameHub> logger;
@@ -18,8 +19,6 @@ namespace Cryptid.Backend.Hubs
         private readonly ActionsController actionController;
         private readonly DataContext context;
         private readonly IMediator mediator;
-
-        private GameState state;
 
         public GameHub(ILogger<GameHub> logger,
                        MatchmakingService matchmakingService,
@@ -66,24 +65,6 @@ namespace Cryptid.Backend.Hubs
 
         public static Guid GLOBAL_GAME_ID = new Guid("809D6392-4D7A-48CB-A462-E001A7F640AD");
 
-        public async Task ExecuteAction()
-        {
-            var game = await context.Games.FindAsync(GLOBAL_GAME_ID);
-            if(game == null)
-            {
-                return;
-            }
-            
-            var state = GameStateSerializationHelper.Load<GameState>(game.CurrentState);
-            //actionController.Execute(state, null);
-            logger.LogInformation($"{Context.ConnectionId} has executed action on game {GameHub.GLOBAL_GAME_ID}");
-            string save = GameStateSerializationHelper.Save(game.CurrentState);
-            game.CurrentState = save;
-            await context.SaveChangesAsync();
-
-            //await Clients.Client(Context.ConnectionId).ChangeMenuState(1);
-            //matchmakingService.AddPlayerToMatchmaking(Context.ConnectionId);
-        }
 
         public async Task AskToRemoveMatchmaking()
         {
@@ -92,18 +73,42 @@ namespace Cryptid.Backend.Hubs
             matchmakingService.RemovePlayerMatchmaking(Context.ConnectionId);
         }
 
-        public async Task SendActionCommand(string commandJson)
+        public async Task SendActionCommand(byte[] bytes)
         {
-            var command = new MoveAction.Command
-            {
-                id = 1,
-                unitId = "",
-                posX = 3,
-                posZ = 3
-            };
+            CommandBase command = CommandReader.ReadCommandFromBytes(bytes);
 
-            actionController.Execute(state, new MoveAction(state, command, ""), command);
-            await Clients.Client(Context.ConnectionId).HandleActionCommand(commandJson);
+            var game = await context.Games.FindAsync(new Guid(command.gameId));
+            if (game == null)
+            {
+                return;
+            }
+
+            var state = GameStateSerializationHelper.Load<GameState>(game.CurrentState);
+
+            if (command == null)
+            {
+                logger.LogError($"Wrong command execution {GetUserId()}");
+            }
+            else
+            {
+                var action = ActionFactory.CreateActionFromCommand(state, command);
+
+                if (actionController.Execute(state, action, command))
+                {
+                    await Clients.Client(Context.ConnectionId).HandleActionCommand(bytes);
+                    logger.LogInformation($"{Context.ConnectionId} has executed action on game {GameHub.GLOBAL_GAME_ID}");
+                    string save = GameStateSerializationHelper.Save(state);
+                    game.CurrentState = save;
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        private string GetUserId()
+        {
+            var identity = (ClaimsIdentity)Context.User.Identity;
+            string id = identity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return id;
         }
 
         public async Task SetNickname(string nickname)

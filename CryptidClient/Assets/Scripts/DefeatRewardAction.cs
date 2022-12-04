@@ -7,7 +7,7 @@ using Zenject;
 using Zenject.Asteroids;
 using static UnityEngine.UI.CanvasScaler;
 
-public class DefeatRewardAction : GameAction
+/*public class DefeatRewardAction : GameAction
 {
     private UnitsController _unitsController;
     private string unitId;
@@ -43,3 +43,4 @@ public class DefeatRewardAction : GameAction
         }
     }
 }
+*/

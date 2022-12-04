@@ -1,11 +1,19 @@
 using Cryptid.Logic;
+using Cryptid.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+
+public enum CommandType : byte
+{
+    MOVE = 1,
+}
 
 public class CommandBase
 {
-    public byte id;
+    public CommandType id;
+    public string gameId;
 }
 
 public class MoveAction : GameAction
@@ -17,11 +25,11 @@ public class MoveAction : GameAction
         public int posZ;
     }
 
-    public Command command;
-
     public override bool CanExecute(GameState state, CommandBase command)
     {
-        if (state.GetUnit(unitId, out UnitState unit))
+        var c = command as MoveAction.Command;
+
+        if (state.GetUnit(c.unitId, out UnitState unit))
         {
             if(state.CurrentPlayerId != unit.ownerId)
             {
@@ -43,20 +51,17 @@ public class MoveAction : GameAction
         return base.CanExecute(state, command);
     }
 
-    private string unitId;
-
-    public MoveAction(GameState gameState, Command command, string playerId) : base(gameState, playerId)
+    public MoveAction(GameState gameState, string playerId) : base(gameState, playerId)
     {
         this.gameState = gameState;
-        this.command = command;
     }
 
     public override void Execute(GameState state, CommandBase command)
     {
-        Command c = command as Command;
-        if(state.GetUnit(unitId, out UnitState unit))
+        Command c = command as MoveAction.Command;
+        if(state.GetUnit(c.unitId, out UnitState unit))
         {
-            unit.moved = true;
+            //unit.moved = true;
             unit.posX = c.posX;
             unit.posZ = c.posZ;
         }

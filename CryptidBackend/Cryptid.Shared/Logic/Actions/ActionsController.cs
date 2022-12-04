@@ -1,15 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class ActionsController
 {
-    public void Execute(GameState state, GameAction action, CommandBase command)
+    public bool Execute(GameState state, GameAction action, CommandBase command)
     {
         if(!action.CanExecute(state, command))
         {
-            return;
+            return false;
         }
 
         action.Execute(state, command);
+        return true;
     }
 }

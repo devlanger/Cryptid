@@ -1,3 +1,4 @@
+using Cryptid.Shared;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ public class InputController : IInitializable, ITickable
     private GameController gameController;
     private ActionsController actionsController;
     private UnitsController unitsController;
+    private ConnectionController connectionController;
     private CameraController cameraController;
 
     private GameObject selectionIndicatorPrefab;
@@ -22,12 +24,18 @@ public class InputController : IInitializable, ITickable
     private GameObject movementIndicator;
 
     [Inject]
-    public void Construct(UnitsController unitsController, GameController gameController, ActionsController actionsController, PopupsController popupsController)
+    public void Construct(
+        UnitsController unitsController, 
+        GameController gameController, 
+        ActionsController actionsController, 
+        PopupsController popupsController,
+        ConnectionController connectionController)
     {
         this.popupsController = popupsController;
         this.gameController = gameController;
         this.actionsController = actionsController;
         this.unitsController = unitsController;
+        this.connectionController = connectionController;
     }
 
     public InputController(GameObject selectionIndicator, GameObject movementIndicator)
@@ -102,13 +110,14 @@ public class InputController : IInitializable, ITickable
                 if (selectionUnit != null)
                 {
                     Vector2Int pos = new Vector2Int((int)hit.point.x, (int)hit.point.z);
-                    ConnectionManager.Instance.SendActionCommand(new MoveAction.Command
+                    connectionController.SendActionCommand(CommandReader.WriteCommandToBytes(new MoveAction.Command
                     {
-                        id = 1,
+                        id = CommandType.MOVE,
+                        gameId = gameController.CurrentGameId,
+                        unitId = selectionUnit.UnitId,
                         posX = pos.x,
                         posZ = pos.y
-                    });
-                    //actionsController.Execute(new MoveAction(gameController.gameState, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.state.unitId, pos));
+                    }));
                     DeselectUnit();
                 }
             }

@@ -9,6 +9,13 @@ public class MatchmakingWaitUI : ViewUI
     [SerializeField] private MenuRouterUI router;
     [SerializeField] private Button cancelButton;
 
+    private ConnectionController connectionController;
+
+    public void Construct(ConnectionController connectionController)
+    {
+        this.connectionController = connectionController;
+    }
+
     private void Awake()
     {
         cancelButton.onClick.AddListener(Cancel);
@@ -17,12 +24,12 @@ public class MatchmakingWaitUI : ViewUI
     public override void Activate()
     {
         base.Activate();
-        ConnectionManager.Instance.AskToJoinMatchmaking();
+        connectionController.AskToJoinMatchmaking();
     }
 
     private void Cancel()
     {
-        ConnectionManager.Instance.AskToRemoveMatchmaking();
+        connectionController.AskToRemoveMatchmaking();
         router.GoToView("online_games");
     }
 }

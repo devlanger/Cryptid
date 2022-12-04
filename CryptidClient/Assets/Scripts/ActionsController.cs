@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class ActionsController
+/*public class ActionsController
 {
-    public Stack<GameAction> actions = new Stack<GameAction>();
+    //public Stack<GameAction> actions = new Stack<GameAction>();
     private GameController gameController;
 
     [Inject]
@@ -25,3 +25,4 @@ public class ActionsController
         actions.Push(action);
     }
 }
+*/

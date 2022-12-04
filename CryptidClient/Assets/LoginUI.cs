@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Zenject;
 using static LoginUI;
 
 public class LoginUI : ViewUI
@@ -30,10 +31,17 @@ public class LoginUI : ViewUI
     [SerializeField] private TextMeshProUGUI loadingIndicatorText;
 
     private Coroutine c;
+    private ConnectionController connectionController;
 
     public string url => NetworkConfiguration.API_URL;
 
     public static string UserId { get; set; }
+
+    [Inject]
+    public void Construct(ConnectionController connectionController)
+    {
+        this.connectionController = connectionController;
+    }
 
     private void Awake()
     {
@@ -147,6 +155,7 @@ public class LoginUI : ViewUI
 
                 SetUserData(www.downloadHandler.text);
                 GoToMainScreen();
+                connectionController.Connect();
             }
             else
             {

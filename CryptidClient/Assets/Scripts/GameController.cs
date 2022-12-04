@@ -14,18 +14,22 @@ using Zenject;
 public class GameController : IInitializable
 {
     public GameState gameState;
-    public static GameState InitialState;
+    public static Tuple<string, GameState> InitialState;
 
     public event Action<GameState> OnFinishedTurn;
     public event Action<GameState> OnGameBegun;
     public event Action<GameState> OnGameUpdated;
 
     private UnitsController _unitsController;
-    
+    private ActionsController actionsController;
+
+    public string CurrentGameId { get; set; }
+
     [Inject]
-    public void Construct(UnitsController _unitsController)
+    public void Construct(UnitsController _unitsController, ActionsController actionsController)
     {
         this._unitsController = _unitsController;
+        this.actionsController = actionsController;
     }
 
     public void LoadGame(GameState state)
@@ -52,7 +56,8 @@ public class GameController : IInitializable
     {
         if(InitialState != null)
         {
-            LoadGame(InitialState);
+            CurrentGameId = InitialState.Item1;
+            LoadGame(InitialState.Item2);
         }
     }
 }

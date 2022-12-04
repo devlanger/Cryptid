@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 public class MenuUI : ViewUI
 {
@@ -20,7 +21,15 @@ public class MenuUI : ViewUI
     [SerializeField] private Button exitButton;
     [SerializeField] private Text versionText;
 
+    private ConnectionController connectionController;
+
     public static string Nickname { get; set; }
+
+    [Inject]
+    public void Construct(ConnectionController connectionController)
+    {
+        this.connectionController = connectionController;
+    }
 
     private void Awake()
     {
@@ -30,8 +39,6 @@ public class MenuUI : ViewUI
         logoutButton.onClick.AddListener(Logout);
 
         versionText.text = $"Ver {Application.version}";
-
-        FindObjectOfType<MenuStateController>().OnMenuStateChanged += MenuUI_OnMenuStateChanged;
     }
 
     public override void Activate()
@@ -45,19 +52,7 @@ public class MenuUI : ViewUI
         //TODO: Erase token
         PlayerPrefs.DeleteKey("userdata");
         loginScreen.GoToLogin();
-    }
-
-    private void MenuUI_OnMenuStateChanged(byte obj)
-    {
-        switch (obj)
-        {
-            case (byte)0:
-                //matchmakingWaitUi.Deactivate();
-                break;
-            case (byte)1:
-                //matchmakingWaitUi.Activate();
-                break;
-        }
+        connectionController.Disconnect();
     }
 
     private void OnlineGame()

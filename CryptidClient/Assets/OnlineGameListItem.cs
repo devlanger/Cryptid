@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class OnlineGameListItem : MonoBehaviour
 {
@@ -20,7 +21,8 @@ public class OnlineGameListItem : MonoBehaviour
 
     private void Play()
     {
-        GameController.InitialState = JsonConvert.DeserializeObject<GameState>(state);
+        Debug.Log($"Load game {idText.text}: {state}");
+        GameController.InitialState = new Tuple<string, GameState>(idText.text, JsonConvert.DeserializeObject<GameState>(state));
         SceneManager.LoadScene(1);
     }
 

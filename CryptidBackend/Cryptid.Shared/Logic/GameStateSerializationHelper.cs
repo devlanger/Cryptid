@@ -10,7 +10,7 @@ namespace CryptidClient.Assets.Scripts.MapLoader
 {
     public class GameStateSerializationHelper
     {
-        public static string Save (object serializableObject)
+        public static string Save (GameState serializableObject)
         {
             // MemoryStream memoryStream = new MemoryStream ();
             // new BinaryFormatter ().Serialize (memoryStream, serializableObject);

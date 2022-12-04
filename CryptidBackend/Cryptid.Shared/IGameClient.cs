@@ -8,6 +8,6 @@ namespace Cryptid.Shared
         Task SendMessage(string messageName, string data);
         Task EnterGame(string gameName);
         Task ChangeMenuState(byte state);
-        Task HandleActionCommand(string commandJson);
+        Task HandleActionCommand(byte[] bytes);
     }
 }
