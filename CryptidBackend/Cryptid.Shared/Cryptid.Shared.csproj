@@ -8,8 +8,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)..\CryptidClient\Assets\Plugins\$(ProjectName).dll&quot;" />
-  </Target>
-
 </Project>
