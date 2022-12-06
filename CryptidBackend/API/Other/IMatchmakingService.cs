@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Persistence.Data;
 using Persistence.Repositories;
+using System.Security.Claims;
 
 namespace Cryptid.Backend
 {
@@ -41,11 +42,13 @@ namespace Cryptid.Backend
 
         public void AddPlayerToMatchmaking(string id)
         {
+            logger.LogInformation($"{id} has joined the matchmaking queue");
             cacheRepository.AddPlayerToMatchmaking(id);
         }
 
         public void RemovePlayerMatchmaking(string id)
         {
+            logger.LogInformation($"{id} has left the matchmaking queue");
             cacheRepository.RemovePlayerMatchmaking(id);
         }
 
@@ -72,38 +75,42 @@ namespace Cryptid.Backend
         private async Task MatchSelectedPlayers(string playerId, string player)
         {
             logger.LogInformation($"Log player {playerId} with player {player}");
-            
-            var g = await context.Games.FindAsync(GameHub.GLOBAL_GAME_ID);
+
             GameState gameState;
 
-            if (g == null)
+            var game = new GameFactory().CreateGame(GameType.TEAM) as Game;
+            var gameResult = await context.Games.AddAsync(game);
+
+            gameState = GameInstanceFactory.StartNewGame(new GameStartSettings
             {
-                var game = new GameFactory().CreateGame(GameType.TEAM) as Game;
-                var gameResult = await context.Games.AddAsync(game);
-
-                gameState = GameInstanceFactory.StartNewGame(new GameStartSettings
+                Players = new List<GameStartSettings.Player>
                 {
-                    players = 3
-                });
+                    new GameStartSettings.Player() { playerId = playerId },
+                    new GameStartSettings.Player() { playerId = player },
+                }
+            });
 
-                game.CurrentState = GameStateSerializationHelper.Save(gameState);
-                game.Participants = new List<GameParticipant>();
-                var user = await userManager.FindByEmailAsync("bob@test.com");
+            game.CurrentState = GameStateSerializationHelper.Save(gameState);
+            game.Participants = new List<GameParticipant>();
+            List<AppUser> users = new List<AppUser>
+            {
+                await userManager.FindByIdAsync(playerId),
+                await userManager.FindByIdAsync(player),
+            };
+
+            foreach (var user in users)
+            {
                 game.Participants.Add(new GameParticipant()
                 {
                     AppUser = user,
                     Game = game
                 });
-                await context.SaveChangesAsync();
-            }
-            else
-            {
-                gameState = GameStateSerializationHelper.Load<GameState>(g.CurrentState);
             }
 
+            await context.SaveChangesAsync();
+
             var gameStateJson = JsonConvert.SerializeObject(gameState);
-            await hub.Clients.Client(playerId).SendAsync("LoadGameState", gameStateJson);
-            await hub.Clients.Client(player).SendAsync("LoadGameState", gameStateJson);
+            await hub.Clients.Users(users.Select(u => u.Id).ToList()).SendAsync("LoadGameState", game.Id, gameStateJson);
         }
     }
 }

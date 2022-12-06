@@ -32,11 +32,7 @@ public class GameLoader : MonoInstaller
 
         Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
         Container.BindInterfacesAndSelfTo<ConnectionController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<NetworkHandler>().AsSingle();
         Container.BindInterfacesAndSelfTo<InputController>().AsSingle().WithArguments(selectionIndicator, movementIndicator);
-    }
-
-    private void OnDestroy() 
-    {
-
     }
 }

@@ -16,7 +16,7 @@ public class MoveCommandHandler : CommandHandlerBase
         this.unitsController = unitsController;
     }
 
-    public override void Handle(CommandBase commandBase)
+    public override void Handle(GameState state, CommandBase commandBase)
     {
         var command = commandBase as MoveAction.Command;
         if(command == null)
@@ -26,15 +26,18 @@ public class MoveCommandHandler : CommandHandlerBase
 
         if(unitsController.GetUnit(command.unitId, out var unit))
         {
-            unit.transform.DOMove(new UnityEngine.Vector3(command.posX, 1, command.posZ), 0.25f);
-            if (UnityEngine.Random.Range(0, 2) == 0)
-            {
-                SoundsController.Instance.PlaySound(SoundId.MOVE_2);
-            }
-            else
-            {
-                SoundsController.Instance.PlaySound(SoundId.MOVE_1);
-            }
+            //UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            //{
+                unit.transform.DOMove(new UnityEngine.Vector3(command.posX, 1, command.posZ), 0.25f);
+                if (UnityEngine.Random.Range(0, 2) == 0)
+                {
+                    SoundsController.Instance.PlaySound(SoundId.MOVE_2);
+                }
+                else
+                {
+                    SoundsController.Instance.PlaySound(SoundId.MOVE_1);
+                }
+            //});
         }
     }
 }

@@ -1,3 +1,5 @@
+using Cryptid.Shared;
+using Cryptid.Shared.Logic.Actions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 using Zenject.Asteroids;
+using static UnityEditor.PlayerSettings;
 
 public class GameUI : MonoBehaviour
 {
@@ -51,7 +54,11 @@ public class GameUI : MonoBehaviour
 
     private void FinishTurn_Click()
     {
-        gameController.FinishTurn();
+        ConnectionController.Instance.SendActionCommand(CommandReader.WriteCommandToBytes(new NextTurnAction.Command
+        {
+            id = CommandType.NEXT_TURN,
+            gameId = gameController.CurrentGameId,
+        }));
     }
 
     private void Instance_OnGameStateChanged(GameState obj)

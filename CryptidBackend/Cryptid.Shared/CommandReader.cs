@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cryptid.Shared.Logic.Actions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -21,6 +22,9 @@ namespace Cryptid.Shared
                     writer.Write(move.posX);
                     writer.Write(move.posZ);
                     break;
+                case NextTurnAction.Command nextTurn:
+
+                    break;
             }
 
             return stream.ToArray();
@@ -42,6 +46,16 @@ namespace Cryptid.Shared
                         unitId = reader.ReadString(),
                         posX = reader.ReadInt32(),
                         posZ = reader.ReadInt32()
+                    };
+                    break;
+                case CommandType.NEXT_TURN:
+                    command = new NextTurnAction.Command { };
+                    break;
+                case CommandType.ATTACK_TARGET:
+                    command = new AttackAction.Command
+                    {
+                        UnitId = reader.ReadString(),
+                        TargetId = reader.ReadString(),
                     };
                     break;
             }

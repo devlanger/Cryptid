@@ -31,21 +31,13 @@ public class LoginUI : ViewUI
     [SerializeField] private TextMeshProUGUI loadingIndicatorText;
 
     private Coroutine c;
-    private ConnectionController connectionController;
+    private ConnectionController connectionController => ConnectionController.Instance;
 
     public string url => NetworkConfiguration.API_URL;
 
-    public static string UserId { get; set; }
-
-    [Inject]
-    public void Construct(ConnectionController connectionController)
-    {
-        this.connectionController = connectionController;
-    }
-
     private void Awake()
     {
-        string userDataJson = PlayerPrefs.GetString("userdata");
+        string userDataJson = PlayerPrefs.GetString(MenuUI.PrefsPath);
         if(string.IsNullOrEmpty(userDataJson))
         {
             GoToLogin();
@@ -155,7 +147,7 @@ public class LoginUI : ViewUI
 
                 SetUserData(www.downloadHandler.text);
                 GoToMainScreen();
-                connectionController.Connect();
+                connectionController.BuildConnection();
             }
             else
             {
@@ -172,7 +164,7 @@ public class LoginUI : ViewUI
     private void SetUserData(string json)
     {
         UserData = JsonConvert.DeserializeObject<UserDto>(json);
-        PlayerPrefs.SetString("userdata", json);
+        PlayerPrefs.SetString(MenuUI.PrefsPath, json);
     }
 
     private IEnumerator Register(RegisterDto registerDto)

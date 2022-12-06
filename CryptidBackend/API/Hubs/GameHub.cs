@@ -52,25 +52,14 @@ namespace Cryptid.Backend.Hubs
         #region Commands 
         public async Task AskToJoinMatchmaking()
         {
-            //TODO: Check if logged
-            // if (!Context.Items.ContainsKey("id"))
-            // {
-            //     return;
-            // }
-
-            logger.LogInformation($"{Context.ConnectionId} has joined the matchmaking queue");
             await Clients.Client(Context.ConnectionId).ChangeMenuState(1);
-            matchmakingService.AddPlayerToMatchmaking(Context.ConnectionId);
+            matchmakingService.AddPlayerToMatchmaking(GetUserId());
         }
-
-        public static Guid GLOBAL_GAME_ID = new Guid("809D6392-4D7A-48CB-A462-E001A7F640AD");
-
 
         public async Task AskToRemoveMatchmaking()
         {
-            logger.LogInformation($"{Context.ConnectionId} has left the matchmaking queue");
             await Clients.Client(Context.ConnectionId).ChangeMenuState(0);
-            matchmakingService.RemovePlayerMatchmaking(Context.ConnectionId);
+            matchmakingService.RemovePlayerMatchmaking(GetUserId());
         }
 
         public async Task SendActionCommand(byte[] bytes)
@@ -92,14 +81,20 @@ namespace Cryptid.Backend.Hubs
             else
             {
                 var action = ActionFactory.CreateActionFromCommand(state, command);
+                command.PlayerId = GetUserId();
 
-                if (actionController.Execute(state, action, command))
+                var result = actionController.Execute(state, action, command);
+                if (result.IsSuccess)
                 {
-                    await Clients.Client(Context.ConnectionId).HandleActionCommand(bytes);
-                    logger.LogInformation($"{Context.ConnectionId} has executed action on game {GameHub.GLOBAL_GAME_ID}");
+                    await Clients.Users(state.players.Keys.ToList()).HandleActionCommand(bytes);
+                    logger.LogInformation($"{Context.ConnectionId} has executed action on game");
                     string save = GameStateSerializationHelper.Save(state);
                     game.CurrentState = save;
                     await context.SaveChangesAsync();
+                }
+                else
+                {
+                    logger.LogError(result.Error);
                 }
             }
         }

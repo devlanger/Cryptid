@@ -6,5 +6,11 @@ using System.Threading.Tasks;
 [System.Serializable]
 public class GameStartSettings
 {
-    public int players = 3;
+    public List<Player> Players { get; set; }
+
+    [System.Serializable]
+    public class Player
+    {
+        public string playerId;
+    }
 }

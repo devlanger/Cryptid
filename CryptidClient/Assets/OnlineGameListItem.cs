@@ -21,9 +21,7 @@ public class OnlineGameListItem : MonoBehaviour
 
     private void Play()
     {
-        Debug.Log($"Load game {idText.text}: {state}");
-        GameController.InitialState = new Tuple<string, GameState>(idText.text, JsonConvert.DeserializeObject<GameState>(state));
-        SceneManager.LoadScene(1);
+        ConnectionController.Instance.LoadGameState(idText.text, state);
     }
 
     public void Fill(OnlineGamesUI.ListGameDto item)

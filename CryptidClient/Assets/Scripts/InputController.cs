@@ -14,7 +14,7 @@ public class InputController : IInitializable, ITickable
     private GameController gameController;
     private ActionsController actionsController;
     private UnitsController unitsController;
-    private ConnectionController connectionController;
+    private ConnectionController connectionController => ConnectionController.Instance;
     private CameraController cameraController;
 
     private GameObject selectionIndicatorPrefab;
@@ -28,14 +28,12 @@ public class InputController : IInitializable, ITickable
         UnitsController unitsController, 
         GameController gameController, 
         ActionsController actionsController, 
-        PopupsController popupsController,
-        ConnectionController connectionController)
+        PopupsController popupsController)
     {
         this.popupsController = popupsController;
         this.gameController = gameController;
         this.actionsController = actionsController;
         this.unitsController = unitsController;
-        this.connectionController = connectionController;
     }
 
     public InputController(GameObject selectionIndicator, GameObject movementIndicator)

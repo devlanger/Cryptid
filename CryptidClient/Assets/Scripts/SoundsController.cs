@@ -34,4 +34,5 @@ public enum SoundId
     MOVE_1 = 3,
     MOVE_2 = 4,
     LOOT_PICKUP = 5,
+    ATTACK = 6,
 }

@@ -3,18 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class MatchmakingWaitUI : ViewUI
 {
     [SerializeField] private MenuRouterUI router;
     [SerializeField] private Button cancelButton;
 
-    private ConnectionController connectionController;
-
-    public void Construct(ConnectionController connectionController)
-    {
-        this.connectionController = connectionController;
-    }
+    private ConnectionController connectionController => ConnectionController.Instance;
 
     private void Awake()
     {

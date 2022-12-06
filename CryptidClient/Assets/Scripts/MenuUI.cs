@@ -3,11 +3,13 @@ using GooglePlayGames.BasicApi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using Zenject;
 
 public class MenuUI : ViewUI
@@ -21,18 +23,19 @@ public class MenuUI : ViewUI
     [SerializeField] private Button exitButton;
     [SerializeField] private Text versionText;
 
-    private ConnectionController connectionController;
+    private ConnectionController connectionController => ConnectionController.Instance;
+    public static string PrefsPath = "userdata";
 
     public static string Nickname { get; set; }
 
-    [Inject]
-    public void Construct(ConnectionController connectionController)
-    {
-        this.connectionController = connectionController;
-    }
-
     private void Awake()
     {
+        string path = Path.Combine(Application.dataPath.Replace("/Assets", ""), "prefs.txt");
+        if (System.IO.File.Exists(path))
+        {
+            PrefsPath = System.IO.File.ReadAllText(path);
+        }
+
         startNewButton.onClick.AddListener(StartNew);
         multiplayerButton.onClick.AddListener(OnlineGame);
         exitButton.onClick.AddListener(Exit);
@@ -49,8 +52,7 @@ public class MenuUI : ViewUI
 
     private void Logout()
     {
-        //TODO: Erase token
-        PlayerPrefs.DeleteKey("userdata");
+        PlayerPrefs.DeleteKey(MenuUI.PrefsPath);
         loginScreen.GoToLogin();
         connectionController.Disconnect();
     }

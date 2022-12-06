@@ -38,15 +38,15 @@ namespace Cryptid.Shared.Logic
         {
             GameState state = new GameState();
 
-            for (int i = 0; i < settings.players; i++)
+            for (int i = 0; i < settings.Players.Count; i++)
             {
-                string playerId = System.Guid.NewGuid().ToString();
+                string playerId = settings.Players[i].playerId;
 
                 UnitState unitState = CreateUnitState(new UnitSpawnSettings()
                 {
                     ownerId = playerId,
                     type = UnitType.PLAYER,
-                    spawnX = (i * 2 - (settings.players / 2)),
+                    spawnX = (i * 2 - (settings.Players.Count / 2)),
                     spawnZ = 0
                 });
 

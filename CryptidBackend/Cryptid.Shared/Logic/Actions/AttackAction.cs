@@ -5,26 +5,29 @@ using System.Collections.Generic;
 
 public class AttackAction : GameAction
 {
-    private string unitId;
-    private string targetUnitId;
-
     public class Command : CommandBase
     {
-
+        public string TargetId { get; internal set; }
+        public string UnitId { get; internal set; }
     }
 
-    public AttackAction(GameState gameState, string playerId) : base(gameState, playerId)
+    public AttackAction(GameState gameState) : base(gameState)
     {
 
     }
 
-    public override bool CanExecute(GameState state, CommandBase command)    
+    public override ActionsController.Result CanExecute(GameState state, CommandBase command)    
     {
+        var c = command as Command;
+        string unitId = c.UnitId;
+        string targetUnitId = c.TargetId;
+
+
         if (state.GetUnit(unitId, out UnitState unit) && state.GetUnit(targetUnitId, out UnitState unitTarget))
         {
             if(unit == unitTarget)
             {
-                return false;
+                return ActionsController.Result.Failure("Unit cant attack itself");
             }
 
             switch (unit.type)
@@ -35,7 +38,7 @@ public class AttackAction : GameAction
                 case UnitType.DROP:
                 case UnitType.DOORS:
                 case UnitType.CHEST:
-                    return false;
+                    return ActionsController.Result.Failure("Wrong unit type");
                 default:
                     break;
             }
@@ -44,7 +47,7 @@ public class AttackAction : GameAction
             {
                 if (state.CurrentPlayerId != unit.ownerId)
                 {
-                    return false;
+                    return ActionsController.Result.Failure("Not my turn");
                 }
             }
 
@@ -55,7 +58,7 @@ public class AttackAction : GameAction
 
             if(unit.attacked)
             {
-                return false;
+                return ActionsController.Result.Failure("Unit already attacked");
             }
         }
 
@@ -65,7 +68,11 @@ public class AttackAction : GameAction
 
     public override void Execute(GameState state, CommandBase command)
     {
-        if(state.GetUnit(unitId, out UnitState unitAttacker) && state.GetUnit(targetUnitId, out UnitState unitTarget))
+        var c = command as Command;
+        string unitId = c.UnitId;
+        string targetUnitId = c.TargetId;
+
+        if (state.GetUnit(unitId, out UnitState unitAttacker) && state.GetUnit(targetUnitId, out UnitState unitTarget))
         {
             unitAttacker.moved = true;
             unitAttacker.attacked = true;
