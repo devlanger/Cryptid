@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class NetworkConfiguration : MonoBehaviour
 {
-    public const string API_URL = "https://cryptid-app.azurewebsites.net/";
+    public static string API_URL => ConnectionController.Instance.Api;
 }

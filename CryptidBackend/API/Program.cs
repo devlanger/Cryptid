@@ -17,7 +17,7 @@ public class Program
         var host = CreateHostBuilder(args).Build();
         using var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
-        
+
         try
         {
             var context = services.GetRequiredService<DataContext>();
@@ -25,12 +25,11 @@ public class Program
             await context.Database.MigrateAsync();
             await Seed.SeedData(context, userManager);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             var logger = services.GetRequiredService<ILogger<Program>>();
             logger.LogError(ex, "An error occured during migration");
         }
-
         await host.RunAsync();
     }
 

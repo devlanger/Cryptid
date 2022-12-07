@@ -18,12 +18,16 @@ public class ConnectionController : MonoBehaviour, IGameServer, IAsyncDisposable
 
     HubConnection connection;
     [SerializeField] private bool useRemote = false;
-    [SerializeField] private string ip = "http://localhost:5212/gameHub";
+    [SerializeField] private string api = "https://localhost:7212/";
+    [SerializeField] private string remoteApi = "https://localhost:7212/";
+    [SerializeField] private string ip = "https://localhost:7212/gameHub";
     [SerializeField] private string remoteIp = "https://cryptid-backend.azurewebsites.net/gameHub";
 
     public event Action<byte[]> OnCommandHandle;
 
     public bool IsConnected => connection.State == HubConnectionState.Connected;
+
+    public string Api { get => useRemote ? remoteApi : api; set => api = value; }
 
     private void Awake()
     {

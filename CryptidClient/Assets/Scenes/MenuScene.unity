@@ -264,7 +264,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212ea01d8f296d9468f9dd8c2715e7ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useRemote: 1
+  useRemote: 0
+  api: http://localhost:5212
+  remoteApi: https://cryptid-app.azurewebsites.net
   ip: http://localhost:5212/gameHub
   remoteIp: https://cryptid-app.azurewebsites.net/gameHub
 --- !u!4 &1021659049
