@@ -27,7 +27,7 @@ namespace API.Extensions
             }
 
             services.AddDbContext<DataContext>(options =>
-                options.UseSqlite(connectionString));
+                options.UseNpgsql(connectionString));
 
             services.AddSwaggerGen(c =>
             {

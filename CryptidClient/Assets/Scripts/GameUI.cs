@@ -9,7 +9,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 using Zenject.Asteroids;
-using static UnityEditor.PlayerSettings;
 
 public class GameUI : MonoBehaviour
 {
