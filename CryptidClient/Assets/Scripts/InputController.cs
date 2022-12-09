@@ -1,4 +1,5 @@
 using Cryptid.Shared;
+using Cryptid.Shared.Logic.Actions;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -82,6 +83,13 @@ public class InputController : IInitializable, ITickable
             {
                 if (selectionUnit != null)
                 {
+                    ConnectionController.Instance.SendActionCommand(CommandReader.WriteCommandToBytes(new AttackAction.Command
+                    {
+                        id = CommandType.ATTACK_TARGET,
+                        gameId = gameController.CurrentGameId,
+                        UnitId = selectionUnit.UnitId,
+                        TargetId = unit.UnitId,
+                    }));
                     //actionsController.Execute(new AttackAction(gameController.gameState, popupsController, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
                 }
                 else
@@ -90,7 +98,14 @@ public class InputController : IInitializable, ITickable
                     selectionIndicator.SetActive(true);
                     if (selectionUnit.IsMine && !selectionUnit.state.moved)
                     {
-                        movementIndicator.SetActive(true);
+                        if(selectionUnit.state != null && selectionUnit.state.ownerId == LoginUI.UserData.id)
+                        {
+                            movementIndicator.SetActive(true);
+                        }
+                        else
+                        {
+                            movementIndicator.SetActive(false);
+                        }
                     }
                     else
                     {

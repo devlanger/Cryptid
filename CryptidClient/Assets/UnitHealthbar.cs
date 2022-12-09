@@ -13,13 +13,19 @@ public class UnitHealthbar : MonoBehaviour
     public void Fill(Unit obj)
     {
         this.unit = obj;
+
+        if (unit == null || unit.state == null)
+        {
+            return;
+        }
+
         slider.maxValue = unit.state.health;
         Refresh();
     }
 
     public void Refresh()
     {
-        if(unit == null)
+        if(unit == null || unit.state == null)
         {
             return;
         }

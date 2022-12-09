@@ -10,6 +10,8 @@ public abstract class GameAction
         this.gameState = gameState;
     }
 
+    public bool IsServer { get; set; } = false;
+
     public virtual ActionsController.Result CanExecute(GameState state, CommandBase command) => ActionsController.Result.Success();
     public abstract void Execute(GameState state, CommandBase command);
 }

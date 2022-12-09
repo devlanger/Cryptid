@@ -32,11 +32,29 @@ public class AttackCommandHandler : CommandHandlerBase
                 .Append(attacker.transform.DOPunchPosition(target.transform.position - attacker.transform.position, 0.25f))
                 .Join(target.transform.DOShakeScale(0.25f).SetDelay(0.125f));
 
+            if(target.state == null)
+            {
+                unitsController.RemoveUnit(command.TargetId);
+                return;
+            }
+
             switch (target.state.type)
             {
                 case UnitType.PLAYER:
                 case UnitType.MONSTER:
                     SoundsController.Instance.PlaySound(SoundId.CLASH_1);
+                    if(gameState.GetUnit(command.TargetId, out var state))
+                    {
+                        if(state.health <= 0)
+                        {
+                            unitsController.RemoveUnit(command.TargetId);
+                        }
+                        //target.Die();
+                    }
+                    else
+                    {
+                        unitsController.RemoveUnit(command.TargetId);
+                    }
                     /*if (unitTarget.state.health <= 0)
                     {
                         s.onComplete += () =>

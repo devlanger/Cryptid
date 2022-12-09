@@ -42,29 +42,36 @@ public class ConnectionController : MonoBehaviour, IGameServer, IAsyncDisposable
         }
     }
 
-    private void Start()
+    private async void Start()
     {
         if(LoginUI.UserData != null)
         {
-            BuildConnection();
+            await BuildConnection();
         }
     }
 
-    public void BuildConnection()
+    private async void OnDestroy()
     {
+        await Disconnect();
+    }
+
+    public async Task BuildConnection()
+    {
+        string token = LoginUI.UserData.token;
         connection = new HubConnectionBuilder()
             .WithUrl(useRemote ? remoteIp : ip, options =>
             {
-                options.AccessTokenProvider = () => Task.FromResult(LoginUI.UserData.token);
+                options.AccessTokenProvider = () => Task.FromResult(token);
+                options.Headers.Add("access_token", token);
+                options.SkipNegotiation = false;
             })
-            .WithAutomaticReconnect()
             .Build();
 
-        Connect();
 
         connection.Closed += async (error) =>
         {
             Debug.Log("Disconnected");
+            FindObjectOfType<LoginUI>().GoToLogin();
             //await connection.StartAsync();
         };
 
@@ -78,6 +85,8 @@ public class ConnectionController : MonoBehaviour, IGameServer, IAsyncDisposable
 
         connection.On<byte[]>(nameof(HandleActionCommand), HandleActionCommand);
         connection.On<string, string>(nameof(LoadGameState), LoadGameState);
+
+        await Connect();
     }
 
     public async ValueTask DisposeAsync()
@@ -88,14 +97,14 @@ public class ConnectionController : MonoBehaviour, IGameServer, IAsyncDisposable
         }
     }
 
-    public async void Connect()
+    public async Task Connect()
     {
         await connection.StartAsync();
     }
 
-    public async void Disconnect()
+    public async Task Disconnect()
     {
-        await connection.StopAsync();
+        await connection?.StopAsync();
         await DisposeAsync();
     }
 

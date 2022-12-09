@@ -7,8 +7,8 @@ public class AttackAction : GameAction
 {
     public class Command : CommandBase
     {
-        public string TargetId { get; internal set; }
-        public string UnitId { get; internal set; }
+        public string TargetId { get; set; }
+        public string UnitId { get; set; }
     }
 
     public AttackAction(GameState gameState) : base(gameState)
@@ -22,12 +22,22 @@ public class AttackAction : GameAction
         string unitId = c.UnitId;
         string targetUnitId = c.TargetId;
 
+        if(IsServer && state.CurrentPlayerId != command.PlayerId)
+        {
+            return ActionsController.Result.Failure("Not my turn");
+        }
+
 
         if (state.GetUnit(unitId, out UnitState unit) && state.GetUnit(targetUnitId, out UnitState unitTarget))
         {
             if(unit == unitTarget)
             {
                 return ActionsController.Result.Failure("Unit cant attack itself");
+            }
+
+            if (IsServer && unit.ownerId != command.PlayerId)
+            {
+                return ActionsController.Result.Failure("Cant attack with not mine unit");
             }
 
             switch (unit.type)
@@ -81,10 +91,11 @@ public class AttackAction : GameAction
             {
                 case UnitType.PLAYER:
                 case UnitType.MONSTER:
-                    unitTarget.health -= new Random().Next(unitAttacker.minDmg, unitAttacker.maxDmg + 1);
+
+                    unitTarget.health -= state.randomGenerator.GenerateRandom(unitAttacker.minDmg, unitAttacker.maxDmg + 1);
                     if (unitTarget.health <= 0)
                     {
-                        state.unitStates.Remove(unitId);
+                        state.unitStates.Remove(targetUnitId);
                         //actionsController.Execute(new DefeatRewardAction(gameState, gameController, actionsController, _unitsController, playerId, unitId, targetUnitId));
                     }
                     else
@@ -100,7 +111,7 @@ public class AttackAction : GameAction
                     var backpack = state.GetCurrentPlayerBackpack();
                     backpack.AddItem(new ItemState()
                     {
-                        itemBaseId = new Random().Next(1, 4)
+                        itemBaseId = state.randomGenerator.GenerateRandom(1, 4)
                     });
                     break;
                 default:

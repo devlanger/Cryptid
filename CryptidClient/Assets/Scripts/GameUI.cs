@@ -73,5 +73,7 @@ public class GameUI : MonoBehaviour
         experienceText.SetText($"{player.Experience}/100");
         
         experienceSlider.value = player.Experience;
+
+        finishTurnButton.interactable = gameController.IsMyTurn(obj);
     }
 }

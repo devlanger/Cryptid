@@ -17,7 +17,7 @@ namespace Cryptid.Shared.Logic.Actions
 
         public override ActionsController.Result CanExecute(GameState state, CommandBase command)
         {
-            if (state.CurrentPlayerId != command.PlayerId)
+            if (IsServer && state.CurrentPlayerId != command.PlayerId)
             {
                 return ActionsController.Result.Failure("False");
             }
