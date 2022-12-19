@@ -30,6 +30,8 @@ public class LoginUI : ViewUI
     [SerializeField] private GameObject loadingIndicator;
     [SerializeField] private TextMeshProUGUI loadingIndicatorText;
 
+    [SerializeField] private Button exitButton;
+
     private Coroutine c;
     private ConnectionController connectionController => ConnectionController.Instance;
 
@@ -47,6 +49,11 @@ public class LoginUI : ViewUI
             SetUserData(userDataJson);
             GoToMainScreen();
         }
+
+        exitButton.onClick.AddListener(() =>
+        {
+            Application.Quit();
+        });
     }
 
     public void GoToRegister()

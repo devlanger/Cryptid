@@ -1079,7 +1079,7 @@ MonoBehaviour:
   mainScreen: {fileID: 0}
   loadingIndicator: {fileID: 2858970651805863416}
   loadingIndicatorText: {fileID: 1335344628848061235}
-  url: http://localhost:5212
+  exitButton: {fileID: 5809700475352363802}
 --- !u!1 &2858970651805863416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,7 +1198,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 554.2563, y: 1108.5125}
+  m_SizeDelta: {x: -37.820007, y: -44.200073}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3474701353424823393
 GameObject:

@@ -1,12 +1,14 @@
 using Cryptid.Shared;
 using Cryptid.Shared.Logic.Actions;
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
+using static UnityEngine.UI.CanvasScaler;
 
 public class InputController : IInitializable, ITickable
 {
@@ -23,6 +25,8 @@ public class InputController : IInitializable, ITickable
 
     private GameObject selectionIndicator;
     private GameObject movementIndicator;
+
+    public event Action<Unit> UnitSelected;
 
     [Inject]
     public void Construct(
@@ -116,6 +120,8 @@ public class InputController : IInitializable, ITickable
 
                     selectionIndicator.transform.position = pos;
                     movementIndicator.transform.position = pos;
+
+                    UnitSelected?.Invoke(unit);
                 }
             }
             else
@@ -143,5 +149,6 @@ public class InputController : IInitializable, ITickable
         movementIndicator.SetActive(false);
 
         selectionUnit = null;
+        UnitSelected?.Invoke(null);
     }
 }
