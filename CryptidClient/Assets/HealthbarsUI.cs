@@ -34,6 +34,11 @@ public class HealthbarsUI : MonoBehaviour
 
     private void Instance_OnUnitSpawn(Unit obj)
     {
+        if(obj.state == null)
+        {
+            return;
+        }
+
         switch (obj.state.type)
         {
             case UnitType.PLAYER:
@@ -45,15 +50,17 @@ public class HealthbarsUI : MonoBehaviour
         }
     }
 
-    private void Instance_OnUnitDespawn(Unit obj)
+    private void Instance_OnUnitDespawn(Unit unit)
     {
-        switch (obj.state.type)
+        if(unit == null)
         {
-            case UnitType.PLAYER:
-            case UnitType.MONSTER:
-                Destroy(healthbars[obj.UnitId].gameObject);
-                healthbars.Remove(obj.UnitId);
-                break;
+            return;
+        }
+
+        if (healthbars.ContainsKey(unit.UnitId))
+        {
+            Destroy(healthbars[unit.UnitId].gameObject);
+            healthbars.Remove(unit.UnitId);
         }
     }
 }

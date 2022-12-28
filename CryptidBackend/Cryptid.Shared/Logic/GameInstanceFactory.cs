@@ -50,6 +50,8 @@ namespace Cryptid.Shared.Logic
                     spawnZ = 0
                 });
 
+                unitState.health = 10;
+
                 state.unitStates.Add(unitState.unitId, unitState);
                 state.backpacks[playerId] = new ItemsContainer();
                 state.players[playerId] = new Player(playerId);
@@ -65,6 +67,8 @@ namespace Cryptid.Shared.Logic
                     spawnX = new Random().Next(-9, 9),
                     spawnZ = new Random().Next(7, 27)
                 });
+
+                unitState.health = 3;
 
                 state.unitStates.Add(unitState.unitId, unitState);
             }

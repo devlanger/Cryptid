@@ -41,9 +41,9 @@ public class UnitsController
     {
         foreach (var item in units.Values)
         {
-            if (item.state.type == UnitType.PLAYER)
+            if (item.state != null && item.state.type == UnitType.PLAYER)
             {
-                if (item.state.ownerId == obj.CurrentPlayerId)
+                if (gameController.IsMyTurn(obj) && item.state.ownerId == obj.CurrentPlayerId)
                 {
                     item.GetComponent<Outline>().enabled = true;
                 }
@@ -83,9 +83,9 @@ public class UnitsController
 
     public void RemoveUnit(string unitId)
     {
-        OnUnitDespawn?.Invoke(units[unitId]);
-        gameController.gameState.unitStates.Remove(unitId);
-        GameObject.Destroy(units[unitId].gameObject);
+        var unit = units[unitId];
+        OnUnitDespawn?.Invoke(unit);
+        GameObject.Destroy(unit.gameObject);
         units.Remove(unitId);
     }
 }

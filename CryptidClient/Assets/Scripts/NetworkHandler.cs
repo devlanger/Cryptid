@@ -63,7 +63,7 @@ public class NetworkHandler : IInitializable, IDisposable
                         new MoveCommandHandler(unitsController).Handle(gameController.gameState, command);
                         break;
                     case CommandType.NEXT_TURN:
-                        new NextTurnCommandHandler().Handle(gameController.gameState, command);
+                        new NextTurnCommandHandler(gameController).Handle(gameController.gameState, command);
                         break;
                     case CommandType.ATTACK_TARGET:
                         new AttackCommandHandler(unitsController).Handle(gameController.gameState, command);

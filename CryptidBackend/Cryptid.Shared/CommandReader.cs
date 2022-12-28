@@ -25,6 +25,10 @@ namespace Cryptid.Shared
                 case NextTurnAction.Command nextTurn:
 
                     break;
+                case AttackAction.Command attack:
+                    writer.Write(attack.UnitId);
+                    writer.Write(attack.TargetId);
+                    break;
             }
 
             return stream.ToArray();

@@ -9,10 +9,12 @@ using Zenject;
 
 public class NextTurnCommandHandler : CommandHandlerBase
 {
-    [Inject]
-    public NextTurnCommandHandler()
-    {
+    private GameController gameController;
 
+    [Inject]
+    public NextTurnCommandHandler(GameController gameController)
+    {
+        this.gameController = gameController;
     }
 
     public override void Handle(GameState gameState, CommandBase commandBase)
@@ -23,6 +25,6 @@ public class NextTurnCommandHandler : CommandHandlerBase
             return;
         }
 
-        gameState.FinishTurn();
+        gameController.FinishTurn();
     }
 }

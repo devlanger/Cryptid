@@ -17,6 +17,7 @@ public class CommandBase
     public CommandType id;
     public string gameId;
     public string PlayerId { get; set; }
+    public bool IsServer { get; set; } = false;
 }
 
 public class MoveAction : GameAction
@@ -32,7 +33,7 @@ public class MoveAction : GameAction
     {
         var c = command as MoveAction.Command;
 
-        if(state.CurrentPlayerId != command.PlayerId)
+        if(IsServer && state.CurrentPlayerId != command.PlayerId)
         {
             return ActionsController.Result.Failure("Not my turn");
         }

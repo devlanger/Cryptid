@@ -22,8 +22,10 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   name: Skeleton
-  description: Got up from the dead.
-  health: 3
-  minDamage: 1
-  maxDamage: 1
+  description: "Reanimated bones that are often controlled by a more powerful being,
+    such as a necromancer. They are weak and brittle, but they can be fast and agile,
+    making them difficult to hit.\r"
+  health: 15
+  minDamage: 5
+  maxDamage: 10
   icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}

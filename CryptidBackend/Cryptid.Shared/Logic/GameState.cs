@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cryptid.Logic;
+using Cryptid.Shared;
 
 [System.Serializable]
 public class GameState
 {
+    [field: NonSerialized]
+    public RandomGenerator randomGenerator = new RandomGenerator();
+
     public string CurrentPlayerId;
     public int CurrentPlayerIndex;
     public int TurnNumber = 1;

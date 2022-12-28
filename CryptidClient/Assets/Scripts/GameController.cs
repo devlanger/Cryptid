@@ -25,6 +25,8 @@ public class GameController : IInitializable
 
     public string CurrentGameId { get; set; }
 
+    public bool IsMyTurn(GameState state) => state.CurrentPlayerId == LoginUI.UserData.id;
+
     [Inject]
     public void Construct(UnitsController _unitsController, ActionsController actionsController)
     {
@@ -39,12 +41,15 @@ public class GameController : IInitializable
         {
             _unitsController.SpawnUnit(unit.Value);
         }
+
+        FinishTurn();
     }
 
     public void FinishTurn()
     {
-        gameState.FinishTurn();
+        //gameState.FinishTurn();
         OnFinishedTurn?.Invoke(gameState);
+        OnGameUpdated?.Invoke(gameState);
     }
 
     public void RaiseUpdateEvent()

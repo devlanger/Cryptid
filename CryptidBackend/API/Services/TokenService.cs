@@ -24,7 +24,8 @@ namespace API.Services
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("JwtSigningKey")));
+            string? jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey == null ? config.GetValue<string>("JwtSigningKey") : jwtKey));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

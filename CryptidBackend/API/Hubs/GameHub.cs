@@ -1,6 +1,7 @@
 ﻿using Cryptid.Shared;
 using CryptidClient.Assets.Scripts.MapLoader;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Persistence.Data;
@@ -10,7 +11,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Cryptid.Backend.Hubs
 {
-    //[Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GameHub : Hub<IGameClient>, IGameServer
     {
         private readonly ILogger<GameHub> logger;
@@ -44,8 +45,9 @@ namespace Cryptid.Backend.Hubs
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            matchmakingService.RemovePlayerMatchmaking(Context.ConnectionId);
-            Console.WriteLine($"Disconnected: {Context.ConnectionId}");
+            string user = GetUserId();
+            matchmakingService.RemovePlayerMatchmaking(user);
+            Console.WriteLine($"Disconnected: {user}");
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -81,6 +83,7 @@ namespace Cryptid.Backend.Hubs
             else
             {
                 var action = ActionFactory.CreateActionFromCommand(state, command);
+                action.IsServer = true;
                 command.PlayerId = GetUserId();
 
                 var result = actionController.Execute(state, action, command);
@@ -101,9 +104,7 @@ namespace Cryptid.Backend.Hubs
 
         private string GetUserId()
         {
-            var identity = (ClaimsIdentity)Context.User.Identity;
-            string id = identity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return id;
+            return Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         }
 
         public async Task SetNickname(string nickname)

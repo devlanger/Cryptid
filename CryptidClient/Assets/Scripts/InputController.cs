@@ -1,11 +1,14 @@
 using Cryptid.Shared;
+using Cryptid.Shared.Logic.Actions;
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
+using static UnityEngine.UI.CanvasScaler;
 
 public class InputController : IInitializable, ITickable
 {
@@ -22,6 +25,8 @@ public class InputController : IInitializable, ITickable
 
     private GameObject selectionIndicator;
     private GameObject movementIndicator;
+
+    public event Action<Unit> UnitSelected;
 
     [Inject]
     public void Construct(
@@ -82,6 +87,13 @@ public class InputController : IInitializable, ITickable
             {
                 if (selectionUnit != null)
                 {
+                    ConnectionController.Instance.SendActionCommand(CommandReader.WriteCommandToBytes(new AttackAction.Command
+                    {
+                        id = CommandType.ATTACK_TARGET,
+                        gameId = gameController.CurrentGameId,
+                        UnitId = selectionUnit.UnitId,
+                        TargetId = unit.UnitId,
+                    }));
                     //actionsController.Execute(new AttackAction(gameController.gameState, popupsController, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
                 }
                 else
@@ -90,7 +102,14 @@ public class InputController : IInitializable, ITickable
                     selectionIndicator.SetActive(true);
                     if (selectionUnit.IsMine && !selectionUnit.state.moved)
                     {
-                        movementIndicator.SetActive(true);
+                        if(selectionUnit.state != null && selectionUnit.state.ownerId == LoginUI.UserData.id)
+                        {
+                            movementIndicator.SetActive(true);
+                        }
+                        else
+                        {
+                            movementIndicator.SetActive(false);
+                        }
                     }
                     else
                     {
@@ -101,6 +120,8 @@ public class InputController : IInitializable, ITickable
 
                     selectionIndicator.transform.position = pos;
                     movementIndicator.transform.position = pos;
+
+                    UnitSelected?.Invoke(unit);
                 }
             }
             else
@@ -128,5 +149,6 @@ public class InputController : IInitializable, ITickable
         movementIndicator.SetActive(false);
 
         selectionUnit = null;
+        UnitSelected?.Invoke(null);
     }
 }

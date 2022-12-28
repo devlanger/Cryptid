@@ -13,7 +13,19 @@ public class Unit : SerializedMonoBehaviour
     public string UnitId = "";
     private GameController gameController;
 
-    public UnitState state => gameController.gameState.unitStates[UnitId];
+    public UnitState state
+    {
+        get
+        {
+            if(gameController.gameState.unitStates.TryGetValue(UnitId, out var state))
+            {
+                return state;
+            }
+
+            return null;
+        }
+    }
+
     public bool IsMine => state.ownerId == gameController.gameState.CurrentPlayerId;
 
     public void Construct(GameController gameController)

@@ -268,7 +268,7 @@ MonoBehaviour:
   api: http://localhost:5212
   remoteApi: http://cryptid-app.azurewebsites.net
   ip: http://localhost:5212/gameHub
-  remoteIp: https://cryptid-app.azurewebsites.net/gameHub
+  remoteIp: http://cryptid-app.azurewebsites.net/gameHub
 --- !u!4 &1021659049
 Transform:
   m_ObjectHideFlags: 0
