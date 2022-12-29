@@ -83,6 +83,7 @@ namespace Cryptid.Backend
 
             gameState = GameInstanceFactory.StartNewGame(new GameStartSettings
             {
+                IsOnline = true,
                 Players = new List<GameStartSettings.Player>
                 {
                     new GameStartSettings.Player() { playerId = playerId },
@@ -111,6 +112,11 @@ namespace Cryptid.Backend
 
             var gameStateJson = JsonConvert.SerializeObject(gameState);
             await hub.Clients.Users(users.Select(u => u.Id).ToList()).SendAsync("LoadGameState", game.Id, gameStateJson);
+        }
+
+        public List<string> GetPlayersInQueue()
+        {
+            return cacheRepository.WaitingPlayers;
         }
     }
 }
