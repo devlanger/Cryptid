@@ -1,45 +1,42 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
-using static System.Net.Mime.MediaTypeNames;
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Backend.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Cryptid.Backend;
 
 namespace Backend.IntegrationTest
 {
     public class FindMembersTest : IClassFixture<WebApplicationFactory<Program>>
     {
-        private HomeController _controller;
-        private Mock<IUsersRepository> _usersMockRepository;
         private readonly WebApplicationFactory<Program> _factory;
 
         public FindMembersTest(WebApplicationFactory<Program> factory)
         {
-            _factory = factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddScoped<IUsersRepository, UsersRepository>();
-                });
-            });
+            _factory = factory;
+        }
 
-            _usersMockRepository = new Mock<IUsersRepository>();
-            _controller = new HomeController(_usersMockRepository.Object);
+        public static IEnumerable<object[]> GetPlayers()
+        {
+            yield return new object[] { "1", "2", "3" };
         }
 
         [Theory]
-        [InlineData("Test")]
-        public void GetUserDataTest(string name)
+        [MemberData(nameof(GetPlayers))]
+        public void TestMatchmakingService(string p1, string p2, string p3)
         {
-        }
+            using (var scope = _factory.Server.Host.Services.CreateScope())
+            {
+                MatchmakingService mmService = scope.ServiceProvider.GetRequiredService<MatchmakingService>();
+                mmService.AddPlayerToMatchmaking(p1);
+                mmService.AddPlayerToMatchmaking(p2);
+                mmService.AddPlayerToMatchmaking(p3);
 
+                mmService.MatchPlayers();
 
-        private string GetUserData()
-        {
-            string name = "Test";
-            return name;
+                Assert.Equal(mmService.GetPlayersInQueue().Count, 1);
+            }
         }
     }
 }
