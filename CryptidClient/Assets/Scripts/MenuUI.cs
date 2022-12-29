@@ -1,3 +1,4 @@
+using Cryptid.Shared.Logic;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using System;
@@ -69,6 +70,21 @@ public class MenuUI : ViewUI
 
     private void StartNew()
     {
+        var state = GameInstanceFactory.StartNewGame(new GameStartSettings()
+        {
+            IsOnline = false,
+            Players = new List<GameStartSettings.Player>()
+            {
+                new GameStartSettings.Player()
+                {
+                    playerId = "local"
+                }
+            }
+        });
+
+        state.FinishTurn();
+
+        GameController.InitialState = new Tuple<string, GameState>("test", state);
         SceneManager.LoadScene(1);
     }
 }

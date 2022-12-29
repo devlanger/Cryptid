@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 public class OnlineGameListItem : MonoBehaviour
 {
@@ -16,6 +17,13 @@ public class OnlineGameListItem : MonoBehaviour
     private string state;
 
     public bool myTurn = false;
+    private GameController gameController;
+
+    [Inject]
+    public void Construct(GameController gameController)
+    {
+        this.gameController = gameController;
+    }
 
     private void Awake()
     {
@@ -39,7 +47,7 @@ public class OnlineGameListItem : MonoBehaviour
         }
 
         JObject obj = JObject.Parse(state);
-        myTurn = obj.GetValue("CurrentPlayerId").ToString() == LoginUI.UserData.id;
+        myTurn = obj.GetValue("CurrentPlayerId").ToString() == gameController.CurrentUserId;
         overlay.SetActive(myTurn);
     }
 }

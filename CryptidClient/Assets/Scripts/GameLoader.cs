@@ -29,6 +29,7 @@ public class GameLoader : MonoInstaller
         Container.Bind<ActionsController>().AsSingle();
         Container.Bind<DatabaseController>().AsSingle();
         Container.Bind<UnitsController>().AsSingle();
+        Container.Bind<CommandExecutor>().AsSingle();
 
         Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
         Container.BindInterfacesAndSelfTo<ConnectionController>().AsSingle();

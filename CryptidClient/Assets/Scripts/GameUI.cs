@@ -23,11 +23,13 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Slider experienceSlider;
 
     private GameController gameController;
+    private CommandExecutor commandExecutor;
 
     [Inject]
-    public void Construct(GameController gameController)
+    public void Construct(GameController gameController, CommandExecutor commandExecutor)
     {
         this.gameController = gameController;
+        this.commandExecutor = commandExecutor;
     }
 
     private void Start()
@@ -53,11 +55,11 @@ public class GameUI : MonoBehaviour
 
     private void FinishTurn_Click()
     {
-        ConnectionController.Instance.SendActionCommand(CommandReader.WriteCommandToBytes(new NextTurnAction.Command
+        commandExecutor.ExecuteCommand(gameController.gameState, new NextTurnAction.Command
         {
             id = CommandType.NEXT_TURN,
             gameId = gameController.CurrentGameId,
-        }));
+        });
     }
 
     private void Instance_OnGameStateChanged(GameState obj)
@@ -66,6 +68,7 @@ public class GameUI : MonoBehaviour
         {
             return;
         }
+
         Player player = obj.GetCurrentPlayer();
         
         turnText.SetText($"Turn {Environment.NewLine}{obj.TurnNumber}");

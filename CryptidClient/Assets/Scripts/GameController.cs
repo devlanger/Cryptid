@@ -22,16 +22,22 @@ public class GameController : IInitializable
 
     private UnitsController _unitsController;
     private ActionsController actionsController;
+    private GameController gameController;
 
     public string CurrentGameId { get; set; }
+    public string CurrentUserId => gameState.IsOnline ? LoginUI.UserData.id : "local";
 
-    public bool IsMyTurn(GameState state) => state.CurrentPlayerId == LoginUI.UserData.id;
+    public bool IsMyTurn(GameState state) => state.CurrentPlayerId == gameController.CurrentUserId;
 
     [Inject]
-    public void Construct(UnitsController _unitsController, ActionsController actionsController)
+    public void Construct(
+        UnitsController _unitsController,
+        ActionsController actionsController,
+        GameController gameController)
     {
         this._unitsController = _unitsController;
         this.actionsController = actionsController;
+        this.gameController = gameController;
     }
 
     public void LoadGame(GameState state)
@@ -58,7 +64,7 @@ public class GameController : IInitializable
     }
 
     public void Initialize()
-    {
+    {   
         if(InitialState != null)
         {
             CurrentGameId = InitialState.Item1;

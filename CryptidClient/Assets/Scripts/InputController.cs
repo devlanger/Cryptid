@@ -25,6 +25,7 @@ public class InputController : IInitializable, ITickable
 
     private GameObject selectionIndicator;
     private GameObject movementIndicator;
+    private CommandExecutor commandExecutor;
 
     public event Action<Unit> UnitSelected;
 
@@ -33,12 +34,14 @@ public class InputController : IInitializable, ITickable
         UnitsController unitsController, 
         GameController gameController, 
         ActionsController actionsController, 
-        PopupsController popupsController)
+        PopupsController popupsController,
+        CommandExecutor commandExecutor)
     {
         this.popupsController = popupsController;
         this.gameController = gameController;
         this.actionsController = actionsController;
         this.unitsController = unitsController;
+        this.commandExecutor = commandExecutor;
     }
 
     public InputController(GameObject selectionIndicator, GameObject movementIndicator)
@@ -87,14 +90,13 @@ public class InputController : IInitializable, ITickable
             {
                 if (selectionUnit != null)
                 {
-                    ConnectionController.Instance.SendActionCommand(CommandReader.WriteCommandToBytes(new AttackAction.Command
+                    commandExecutor.ExecuteCommand(gameController.gameState, new AttackAction.Command
                     {
                         id = CommandType.ATTACK_TARGET,
                         gameId = gameController.CurrentGameId,
                         UnitId = selectionUnit.UnitId,
                         TargetId = unit.UnitId,
-                    }));
-                    //actionsController.Execute(new AttackAction(gameController.gameState, popupsController, gameController, actionsController, unitsController, gameController.gameState.CurrentPlayerId, selectionUnit.UnitId, unit.UnitId));
+                    });
                 }
                 else
                 {
@@ -102,7 +104,7 @@ public class InputController : IInitializable, ITickable
                     selectionIndicator.SetActive(true);
                     if (selectionUnit.IsMine && !selectionUnit.state.moved)
                     {
-                        if(selectionUnit.state != null && selectionUnit.state.ownerId == LoginUI.UserData.id)
+                        if(selectionUnit.state != null && selectionUnit.state.ownerId == gameController.CurrentUserId)
                         {
                             movementIndicator.SetActive(true);
                         }
@@ -129,14 +131,14 @@ public class InputController : IInitializable, ITickable
                 if (selectionUnit != null)
                 {
                     Vector2Int pos = new Vector2Int((int)hit.point.x, (int)hit.point.z);
-                    connectionController.SendActionCommand(CommandReader.WriteCommandToBytes(new MoveAction.Command
+                    commandExecutor.ExecuteCommand(gameController.gameState, new MoveAction.Command
                     {
                         id = CommandType.MOVE,
                         gameId = gameController.CurrentGameId,
                         unitId = selectionUnit.UnitId,
                         posX = pos.x,
                         posZ = pos.y
-                    }));
+                    });
                     DeselectUnit();
                 }
             }

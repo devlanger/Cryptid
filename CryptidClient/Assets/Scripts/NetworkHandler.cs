@@ -17,6 +17,7 @@ using Zenject.Asteroids;
 public class NetworkHandler : IInitializable, IDisposable
 {
     private UnitsController unitsController;
+    private CommandExecutor commandExecutor;
     private ActionsController actionsController;
     private GameController gameController;
 
@@ -24,12 +25,10 @@ public class NetworkHandler : IInitializable, IDisposable
 
     [Inject]
     public void Construct(
-        GameController gameController, 
-        UnitsController _unitsController, 
-        ActionsController actionsController)
+        CommandExecutor commandExecutor,
+        GameController gameController)
     {
-        this.unitsController = _unitsController;
-        this.actionsController = actionsController;
+        this.commandExecutor = commandExecutor;
         this.gameController = gameController;
     }
 
@@ -49,35 +48,6 @@ public class NetworkHandler : IInitializable, IDisposable
     private void Instance_OnCommandHandle(byte[] bytes)
     {
         var command = CommandReader.ReadCommandFromBytes(bytes);
-        var action = ActionFactory.CreateActionFromCommand(gameController.gameState, command);
-        command.PlayerId = LoginUI.UserData.id;
-
-        var result = actionsController.Execute(gameController.gameState, action, command);
-        if (result.IsSuccess)
-        {
-            try
-            {
-                switch (command.id)
-                {
-                    case CommandType.MOVE:
-                        new MoveCommandHandler(unitsController).Handle(gameController.gameState, command);
-                        break;
-                    case CommandType.NEXT_TURN:
-                        new NextTurnCommandHandler(gameController).Handle(gameController.gameState, command);
-                        break;
-                    case CommandType.ATTACK_TARGET:
-                        new AttackCommandHandler(unitsController).Handle(gameController.gameState, command);
-                        break;
-                }
-            }
-            catch(Exception ex)
-            {
-                Debug.LogError(ex.Message);
-            }
-        }
-        else
-        {
-            Debug.LogError($"Command issue {command.id}: {result.Error}");
-        }
+        commandExecutor.RunCommand(gameController.gameState, command);
     }
 }
