@@ -11,6 +11,8 @@ public class GameState
     [field: NonSerialized]
     public RandomGenerator randomGenerator = new RandomGenerator();
 
+    public bool IsOnline;
+
     public string CurrentPlayerId;
     public int CurrentPlayerIndex;
     public int TurnNumber = 1;
